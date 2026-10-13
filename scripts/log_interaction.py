@@ -14,6 +14,7 @@ Example:
 """
 import argparse
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -40,10 +41,9 @@ def main() -> None:
     parser.add_argument("--notes", default="")
     args = parser.parse_args()
 
-    session = ""
-    current = LOGS / ".current_session"
-    if current.exists():
-        session = current.read_text(encoding="utf-8").strip()
+    # Claude Code exports the session id to its shell; the hooks key records by the
+    # same id, truncated to 8 characters. Empty when run by hand.
+    session = os.environ.get("CLAUDE_CODE_SESSION_ID", "")[:8]
 
     rec = {
         "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),

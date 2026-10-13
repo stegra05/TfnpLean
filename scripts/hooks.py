@@ -38,7 +38,6 @@ NOW_FILE = WORKSPACE / "notes" / "NOW.md"
 BACKUP_MIRROR = Path.home() / "Library/Mobile Documents/com~apple~CloudDocs/Backups/bachelors/notes/ai-logs"
 EVENTS = LOGS / "events.jsonl"
 INTERACTIONS = LOGS / "interactions.jsonl"
-CURRENT_SESSION = LOGS / ".current_session"
 LAST_HEAD = LOGS / ".head"
 UNLOCKED = ROOT / "docs" / "UNLOCKED.md"
 FROZEN = ROOT / "docs" / "frozen.json"
@@ -222,7 +221,6 @@ def main() -> None:
     if event == "session_start":
         rec.update(source=payload.get("source"), head=record_head())
         LOGS.mkdir(parents=True, exist_ok=True)
-        CURRENT_SESSION.write_text(sid, encoding="utf-8")
         if NOW_FILE.exists():
             print("Current focus (notes/NOW.md):\n" + NOW_FILE.read_text(encoding="utf-8").strip())
 
