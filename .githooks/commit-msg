@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Commit grammar: the git log doubles as the thesis timeline.
+# <kind>: <what> [(paper item)]   kinds: define state test prove design infra docs
+msg=$(head -n1 "$1")
+case "$msg" in
+  define:*|state:*|test:*|prove:*|design:*|infra:*|docs:*|Merge*|Revert*) exit 0 ;;
+esac
+echo "commit message must start with define:, state:, test:, prove:, design:, infra: or docs:" >&2
+echo "got: $msg" >&2
+exit 1

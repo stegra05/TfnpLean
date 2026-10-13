@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {"hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/scripts/hooks.py session_start"}]}
+    ],
+    "UserPromptSubmit": [
+      {"hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/scripts/hooks.py prompt"}]}
+    ],
+    "PreToolUse": [
+      {"matcher": "Edit|Write|MultiEdit", "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/scripts/hooks.py gate"}]}
+    ],
+    "PostToolUse": [
+      {"matcher": "Edit|Write|MultiEdit", "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/scripts/hooks.py file_edit"}]},
+      {"matcher": "Bash", "hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/scripts/hooks.py bash"}]}
+    ],
+    "Stop": [
+      {"hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/scripts/hooks.py stop"}]}
+    ],
+    "SessionEnd": [
+      {"hooks": [{"type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR\"/scripts/hooks.py session_end"}]}
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(lake build:*)",
+      "Bash(lake env:*)",
+      "Bash(lake exe cache get:*)",
+      "Bash(bash scripts/sorry_census.sh:*)",
+      "Bash(python3 scripts/log_interaction.py:*)",
+      "Bash(python3 scripts/summary.py:*)",
+      "Bash(python3 scripts/check_paper_map.py:*)",
+      "Bash(python3 scripts/freeze.py --check:*)"
+    ]
+  }
+}

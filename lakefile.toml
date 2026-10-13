@@ -1,0 +1,18 @@
+name = "TfnpLean"
+version = "0.1.0"
+keywords = ["complexity", "tfnp", "ppad", "pure-circuit"]
+defaultTargets = ["TfnpLean"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+
+# CSLib pinned to a commit; it pulls Mathlib transitively (see docs/DESIGN.md).
+[[require]]
+name = "cslib"
+git = "https://github.com/leanprover/cslib"
+rev = "cd48dc2ae0e13e563d5f7085b19e170c5c273eb2"
+
+[[lean_lib]]
+name = "TfnpLean"

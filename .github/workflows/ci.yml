@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: leanprover/lean-action@v1
+      - name: Sorry census
+        run: bash scripts/sorry_census.sh | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Axiom audit
+        run: lake env lean scripts/AxiomAudit.lean
+      - name: Frozen definitions unchanged
+        run: python3 scripts/freeze.py --check
+      - name: Paper map consistent
+        run: python3 scripts/check_paper_map.py

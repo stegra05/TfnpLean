@@ -1,0 +1,8 @@
+/.lake
+.DS_Store
+.claude/settings.local.json
+/.ai-logs/
+
+# Supervision skills, kept local
+/.claude/skills/weekly/
+/.claude/skills/walkthrough/
