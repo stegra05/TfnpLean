@@ -18,7 +18,8 @@ cake cutting.
 |---|---|---|---|
 | DFHM24 Def. 1: node values 0, 1, ⊥ | `TfnpLean.PureCircuit.Value` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: gate (NOR, PURIFY) | `TfnpLean.PureCircuit.Gate` | `TfnpLean/PureCircuit.lean` | drafted |
-| DFHM24 Def. 1: instance, every node output of exactly one gate | `TfnpLean.PureCircuit.Instance` | `TfnpLean/PureCircuit.lean` | drafted |
+| DFHM24 Def. 1: instance (distinct nodes and exactly-one rule as fields) | `TfnpLean.PureCircuit.Instance` | `TfnpLean/PureCircuit.lean` | drafted |
+| DFHM24 Def. 1: every node output of exactly one gate | `TfnpLean.PureCircuit.OutputUnique` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: NOR satisfied | `TfnpLean.PureCircuit.Gate.Satisfied` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: PURIFY satisfied | `TfnpLean.PureCircuit.Gate.Satisfied` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: solution | `TfnpLean.PureCircuit.Instance.IsSolution` | `TfnpLean/PureCircuit.lean` | drafted |

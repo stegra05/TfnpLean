@@ -113,12 +113,12 @@ end Gate
 
 /-- Every node is the output of exactly one gate of `G` [DFHM24, Definition 1]. -/
 def OutputUnique (G : Finset (Gate n)) : Prop :=
-  ∀ x : Fin n, ∃! g, g ∈ G ∧ x ∈ g.outputs
+  ∀ i : Fin n, ∃! g, g ∈ G ∧ i ∈ g.outputs
 
 /-- `OutputUnique` is decided by counting, for each node, the gates that output it. -/
 instance (G : Finset (Gate n)) : Decidable (OutputUnique G) :=
-  decidable_of_iff (∀ x : Fin n, (G.filter (x ∈ ·.outputs)).card = 1) <| by
-    refine forall_congr' fun x => ?_
+  decidable_of_iff (∀ i : Fin n, (G.filter (i ∈ ·.outputs)).card = 1) <| by
+    refine forall_congr' fun i => ?_
     rw [Finset.card_eq_one]
     constructor
     · rintro ⟨g, hg⟩

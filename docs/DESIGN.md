@@ -153,14 +153,15 @@ the supervisor.
 
 - **Decision:** `Instance n` is a structure with `gates`, `distinct : ∀ g ∈
   gates, g.Distinct` and `output_unique : OutputUnique gates`, where
-  `OutputUnique G := ∀ x, ∃! g, g ∈ G ∧ x ∈ g.outputs`.
+  `OutputUnique G := ∀ i, ∃! g, g ∈ G ∧ i ∈ g.outputs`.
 - **Paper reference:** DFHM24, Definition 1 ("u, v, w ∈ V are distinct
   nodes", "each node is the output of exactly one gate"); Remark 2 (allowing
   `u = v` changes the definition).
 - **Encoding:** `∃!` copies "exactly one". A `Decidable` instance proves it
-  equivalent to "the number of gates with output `x` is 1", so `decide`
+  equivalent to "the number of gates with output `i` is 1", so `decide`
   checks instances. Distinctness is a predicate on gates, required by the
-  instance, not built into `Gate`.
+  instance, not built into `Gate`. The node variable is `i`, because `x`
+  names the assignment throughout, as in the paper.
 - **Rejected:** a separate `Instance.IsValid` predicate (every later
   definition would have to remember it); the count as the definition (one
   step away from the paper's wording); distinctness inside each gate

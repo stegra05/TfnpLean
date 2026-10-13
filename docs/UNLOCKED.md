@@ -11,7 +11,3 @@ supervisor review with `python3 scripts/freeze.py <file>`.
 Unlocked now:
 
 - TfnpLean/PureCircuit.lean
-- TfnpLean.lean
-- TfnpLean/Results/PureCircuitInPPAD.lean
-- TfnpLean/Validation/CakeCutting.lean
-- TfnpLean/Validation/SparseWinLose.lean
