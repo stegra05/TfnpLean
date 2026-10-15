@@ -1,12 +1,15 @@
 # Design decisions
 
-One entry per decision: what was decided, the paper reference, how it is
-encoded, the rejected alternative, and why. Nothing in the library changes
-shape without an entry here. Decisions marked "to confirm" are waiting for
-the supervisor.
+One entry per decision: the question, the decision (or OPEN), the paper
+reference, how it is encoded, the rejected options, why, and the date.
+Nothing in the library changes shape without an entry here. Decisions
+marked "open", "proposed" or "to confirm" are waiting for the supervisor.
+A revised decision keeps its number and records what it replaced.
 
 ## D1. Base: CSLib on top of Mathlib
 
+- **Question:** Which library does TfnpLean build on?
+- **Date:** 2026-10-08
 - **Decision:** depend on CSLib (leanprover/cslib), pinned to commit
   `cd48dc2a` of 2026-10-08. Mathlib comes in transitively through CSLib's
   own pin (v4.35.0-rc4), so it is not required separately.
@@ -24,14 +27,16 @@ the supervisor.
 
 ## D2. Pure-Circuit is a constraint problem, not a CSLib circuit
 
+- **Question:** Is a Pure-Circuit instance a CSLib circuit?
+- **Date:** 2026-10-08
 - **Decision:** model a Pure-Circuit instance as a finite node set with gate
   constraints (NOR: two inputs, one output; PURIFY: one input, two outputs)
   where every node is the output of exactly one gate, and a solution as an
   assignment of `0`, `1` or `⊥` to nodes satisfying every gate's relation.
 - **Paper reference:** Deligkas, Fearnley, Hollender, Melissourgos,
   Definition 1; Appendix A.1 for why the gate rules cannot be weakened.
-- **Encoding:** to be written with the author (step 1). Open sub-choices
-  are listed under "Open" below.
+- **Encoding:** D7 to D12. Whether End-of-Line and Localopt share this
+  core is D13.
 - **Rejected:** reusing `Cslib.Circuits.Circuit`. CSLib circuits are
   acyclic straight-line programs with a topological order, functional gate
   semantics and designated outputs. Pure-Circuit allows cycles, its gates
@@ -39,33 +44,35 @@ the supervisor.
   Forcing it into the circuit model would need either a cyclic variant of
   CSLib's `Program` or a relational interpretation, both further from the
   paper.
-- **Why:** the project plan: the definition stands on its own and only needs basic
-  maths. A definition that reads like Definition 1 is easier to check
+- **Why:** the definition stands on its own and only needs basic maths. A definition that reads like Definition 1 is easier to check
   against the paper, which is the central deliverable.
 
 ## D3. All gates of Section 2.1 in one gate type; the gate set is a parameter of the instance
 
+- **Question:** How are the gates of Section 2.1 and the gate sets of Corollary 2.2 represented?
+- **Date:** 2026-10-15 (until then: NOR and PURIFY only, variants to confirm)
 - **Decision:** `Gate n` has a constructor for each of the seven gates
   (COPY, NOT, OR, AND, NAND, NOR, PURIFY). `Instance S n` takes a gate set
   `S : Finset GateType` and requires every gate to have a type in `S`.
   Pure-Circuit as in Definition 1 is `S = {NOR, PURIFY}`; the choices of
   Corollary 2.2 are further values of `S`. Each gate set used in a statement
   is a named `Finset GateType`: `norPurify` for Definition 1; the sets of
-  Corollary 2.2 are named together with their statements in step 5.
+  Corollary 2.2 are named together with their statements in
+  `Results/PureCircuitVariants.lean`.
 - **Paper reference:** Definition 1, Section 2.1 ("More gates"), Corollary 2.2
   ("for any of the following choices of gate types"), Corollary 2.3.
 - **Encoding:** `GateType` is a label with one constructor per gate,
   `Gate.type` maps a gate to its label, and the instance field `allowed`
-  (D10) restricts the gates. The gates are defined in step 1 together with
+  (D10) restricts the gates. The gates are defined together with
   Definition 1, so `TfnpLean/PureCircuit.lean` is frozen once; the
-  reductions between the variants stay in step 5.
+  reductions between the variants come with the reductions.
 - **Rejected:** separate problem definitions per gate set (repeats the
   instance conditions for every variant, and the reductions of Corollary 2.2
   would map between unrelated types); an unrestricted `Instance n` with a
   separate predicate "uses only gates from `S`" (every later definition
   would have to remember it, against D10); the seven-gate instance as the
   main object (not what the paper calls Pure-Circuit; the main object is
-  the instance over `{NOR, PURIFY}`); adding the gates in step 5 (the
+  the instance over `{NOR, PURIFY}`); adding the gates with the reductions (the
   instance type changes, so the frozen file would have to be unfrozen);
   `S` written as a literal at each use (`{NOR, PURIFY}` and `{PURIFY, NOR}`
   are equal sets but not definitionally equal terms, so the two instance
@@ -77,6 +84,8 @@ the supervisor.
 
 ## D4. Lean module system and CSLib file conventions
 
+- **Question:** Which file conventions does the library follow?
+- **Date:** 2026-10-08
 - **Decision:** every file starts with the CSLib copyright header, `module`,
   and `public import` lines; module docstrings use CSLib's `/-! # ... -/`
   style with a References section.
@@ -87,24 +96,33 @@ the supervisor.
 - **Why:** Mathlib and CSLib require the module system; adopting it now
   avoids a rewrite if the library is contributed.
 
-## D5. Polynomial time comes from CSLib's single-tape machines
+## D5. Polynomial time behind an interface (open)
 
-- **Decision:** "fast" in TFNP and in reductions means
-  `Cslib.PolyTimeComputable` from
-  `Cslib.Computability.Machines.Turing.SingleTape.Deterministic`.
+- **Question:** What does "polynomial time" mean in FP, TFNP, reductions
+  and the classes?
+- **Date:** 2026-10-15 (first decided 2026-10-08)
+- **Options:** (a) a concrete machine model, such as
+  `Cslib.PolyTimeComputable` on CSLib's single-tape machines or Mathlib's
+  Turing-machine polynomial time; (b) an abstract cost model; (c) polynomial
+  time as an explicit hypothesis of each statement.
+- **Decision:** search problems, reductions and classes are defined against
+  an abstract interface, so that they do not wait for the choice. Which of
+  (a) to (c) stands behind it is OPEN, to settle with the supervisor.
 - **Paper reference:** Megiddo and Papadimitriou 1991 (FP); CSLib's
   reference is Arora and Barak, Chapter 1.
-- **Encoding:** step 3 wraps `PolyTimeComputable` for the encodings of
-  instances and solutions; FP is defined on top of it since CSLib has no
-  class FP.
-- **Rejected:** an abstract "cost model" typeclass to be instantiated
-  later, and complexitylib's `P`/`FP`.
-- **Why:** build step 3 of the project plan; one concrete notion keeps statements honest.
-  Risk: encodings of structured instances (gate lists, circuits) as tapes
-  are machine work; the results band budgets for that.
+- **Rejected:** fixing (a) before the classes are written (every class
+  would wait on the encodings of gate lists and circuits as tapes).
+- **Why:** every class sits above this layer. The options trade
+  faithfulness against effort: (a) is closest to the papers but the
+  encodings are machine work; (b) and (c) are cheaper but move part of the
+  meaning into an assumption that has to be stated honestly.
+- **History:** until 2026-10-15 the decision was (a) with (b) rejected;
+  reopened because it blocked the classes.
 
 ## D6. Hardness is stated, not proved (proposed, to confirm)
 
+- **Question:** Is PPAD-hardness of Pure-Circuit part of the library?
+- **Date:** 2026-10-08
 - **Decision:** state PPAD-hardness of Pure-Circuit as a theorem next to
   membership, so that PPAD-completeness (Theorem 2.1) is fully stated. It
   stays unproven and is marked as such.
@@ -120,6 +138,8 @@ the supervisor.
 
 ## D7. Node values are a three-constructor inductive
 
+- **Question:** How are the node values `0`, `1`, `⊥` encoded?
+- **Date:** by 2026-10-13
 - **Decision:** `PureCircuit.Value` with constructors `zero`, `one`, `bot`,
   and `Value.IsPure` for the paper's `x ∈ {0, 1}`.
 - **Paper reference:** DFHM24, Definition 1 (`x : V → {0, 1, ⊥}`).
@@ -135,6 +155,8 @@ the supervisor.
 
 ## D8. Nodes are `Fin n`, with `n` a parameter of the instance type
 
+- **Question:** What is the node set of an instance?
+- **Date:** by 2026-10-13, amended 2026-10-15 (gate set `S`)
 - **Decision:** the node set is `Fin n`; an instance has type `Instance S n`
   (gate set `S`, D3) and an assignment has type `Fin n → Value`.
 - **Paper reference:** DFHM24, Definition 1 (`V = [n]`).
@@ -142,13 +164,15 @@ the supervisor.
   from `0`, the paper from `1`; nodes are shifted by one.
 - **Rejected:** any type `V` with `[Fintype V] [DecidableEq V]`. More general,
   but the paper fixes `[n]`, and encoding instances for polynomial time
-  (step 3) needs a numbering of the nodes anyway.
+  (D5) needs a numbering of the nodes anyway.
 - **Why:** literal match with the paper, and `decide` checks small instances
-  directly. The search-problem step bundles the size as `Σ n, Instance S n`,
+  directly. The search-problem layer bundles the size as `Σ n, Instance S n`,
   with `S` fixed per problem.
 
 ## D9. A gate is an inductive with one constructor per type; an instance's gates are a `Finset`
 
+- **Question:** How are a gate and the gates of an instance encoded?
+- **Date:** by 2026-10-13, amended 2026-10-15 (Section 2.1 gates)
 - **Decision:** `Gate n` has constructors `nor (u v w)` and `purify (u v w)`
   for Definition 1, and `copy (u v)`, `not (u v)`, `or (u v w)`,
   `and (u v w)`, `nand (u v w)` for Section 2.1 (D3, D12); an instance holds
@@ -173,6 +197,8 @@ the supervisor.
 
 ## D10. The instance conditions are proof fields of `Instance`
 
+- **Question:** Where do the conditions on a valid instance live?
+- **Date:** 2026-10-13, amended 2026-10-15 (`allowed`)
 - **Decision:** `Instance S n` is a structure with `gates`, `allowed : ∀ g ∈
   gates, g.type ∈ S`, `distinct : ∀ g ∈ gates, g.Distinct` and
   `output_unique : OutputUnique gates`, where
@@ -202,6 +228,8 @@ the supervisor.
 
 ## D11. Gate semantics are the paper's implications, PURIFY unconditional
 
+- **Question:** How are the gate constraints written?
+- **Date:** by 2026-10-13, amended 2026-10-15 (Section 2.1 gates)
 - **Decision:** `Gate.Satisfied g x` is the conjunction of the paper's
   clauses for the gate's type, written as in the paper's left column.
 - **Paper reference:** DFHM24, Definition 1, gate constraints for NOR and
@@ -220,6 +248,8 @@ the supervisor.
 
 ## D12. COPY and NOT are gates on two nodes
 
+- **Question:** How many nodes do COPY and NOT have, and must they differ?
+- **Date:** 2026-10-15
 - **Decision:** `copy (u v)` and `not (u v)` with input `u` and output `v`;
   `outputs` is `{v}` and `Distinct` is `u ≠ v`.
 - **Paper reference:** DFHM24, Section 2.1 (`g = (T, u, v)` for COPY and
@@ -238,13 +268,59 @@ the supervisor.
   a node to garbage is not among the paper's gates. To confirm with the
   supervisor.
 
+## D13. One circuit core for Pure-Circuit, End-of-Line and Localopt (open)
+
+- **Question:** Do the three canonical problems share one circuit type?
+- **Date:** 2026-10-15
+- **Options:** (a) one core, generic in value domain and gate set, used by
+  all three; (b) a separate type per problem; (c) the constraint model of
+  D2 for Pure-Circuit and CSLib's `Cslib.Circuits.Circuit` for End-of-Line
+  and Localopt.
+- **Decision:** OPEN, proposed (a). To settle before End-of-Line is
+  written, and before `PureCircuit.lean` is frozen, since (a) changes its
+  types.
+- **Paper reference:** DFHM24, Definition 1 (constraints on a possibly
+  cyclic graph over `{0, 1, ⊥}`, solved by an assignment); Pap94 and DGP05
+  Section 2 (End-of-Line's `S` and `P` as Boolean circuits that are
+  evaluated); FGHS (arXiv:2011.01929) Definition 2 (Localopt's circuits).
+- **Why:** with (b), three circuit types drift apart and every reduction
+  between the problems translates between them. The open part is whether
+  one core can be both a relation (Pure-Circuit) and a function to evaluate
+  (End-of-Line, Localopt) without reading less like either paper.
+
+## D14. Classes are reduction closures of their canonical problems (proposed)
+
+- **Question:** How are PPAD and PLS defined?
+- **Date:** 2026-10-15
+- **Decision:** one generic construction, the closure of a problem under
+  the library's reductions, gives PPAD from End-of-Line and PLS from
+  Localopt.
+- **Paper reference:** Pap94 (PPAD); FGHS Section 3.1 ("the set of all
+  TFNP problems that reduce to the problem Localopt").
+- **Rejected:** one bespoke definition per class (repeats the construction,
+  and the classes could differ in how membership is stated); PLS through the
+  three algorithms of Johnson, Papadimitriou and Yannakakis 1988 (equivalent,
+  but a second shape next to PPAD's).
+- **Why:** if PLS does not fit the construction PPAD used, the abstraction
+  is wrong, and that shows early.
+
+## D15. One variant per problem, cited by page
+
+- **Question:** Which variant of each canonical problem does the library define?
+- **Date:** 2026-10-15
+- **Decision:** each canonical problem has exactly one Lean definition,
+  following one paper's variant, cited with section and page. Other
+  variants (for example whether `0^n` must be a source or counts as a
+  solution when it is not) are separate definitions related by reductions,
+  if needed at all.
+- **Rejected:** a definition that merges variants, or one that follows no
+  single text.
+- **Why:** the variants are equivalent in complexity but different as Lean
+  definitions, and the side-by-side check (`CHECKING.md`) needs one text to
+  compare with.
+
 ## Open
 
 - Namespace: `TfnpLean` for now; a CSLib contribution would use `Cslib`.
-- Fixed-point theorem for Pure-Circuit in PPAD: in scope or a marked
-  assumption.
-- Validation: an existing problem counts as validated when it can be
-  written down with the definitions, or only when it is proven to be in the
-  class (`Validation/SparseWinLose.lean`).
-- Cake cutting is studied in a query model; how it fits a library of
-  input-based search problems (`Validation/CakeCutting.lean`).
+- Polynomial time (D5) and the circuit core (D13).
+- Which text End-of-Line and Localopt follow (D15).

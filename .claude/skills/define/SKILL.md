@@ -31,11 +31,12 @@ step, never continue past step 3 without his choice.
 6. **Must-fail.** At least one `example : ¬ ...` that the definition must
    reject (see `docs/CHECKING.md`). If it unexpectedly holds, the definition
    is too weak: go back to step 3, do not weaken the test.
-7. **Record.** `docs/DESIGN.md`: new entry (decision, paper reference,
-   encoding, rejected alternative, why) plus a divergence row for every
-   difference from the paper text. `docs/PAPER_MAP.md`: declaration name,
-   file, status `drafted`. `docs/CHECKING.md`: section for the item with
-   the examples and must-fail cases listed.
+7. **Record.** `docs/DESIGN.md`: new entry (question, decision or OPEN,
+   paper reference, encoding, rejected options, why, date) plus a
+   divergence row for every difference from the paper text.
+   `docs/PAPER_MAP.md`: declaration name, file, status `drafted`.
+   `docs/CHECKING.md`: section for the item with the examples and
+   must-fail cases listed.
 8. **Build and check.** `lake build`, `python3 scripts/check_paper_map.py`.
 9. **Log.** `python3 scripts/log_interaction.py --task definition` (or
    `statement`) with the exact model id and honest outcome.

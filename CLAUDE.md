@@ -12,7 +12,8 @@ planning lives outside this repository and never gets copied in.
    wrong; the last case is decided with the author and the supervisor, not
    by editing the definition.
 2. **Every design choice is logged in `docs/DESIGN.md`** before it lands:
-   decision, paper reference, encoding, rejected alternative, why.
+   question, decision (or OPEN), paper reference, encoding, rejected
+   options, why, date.
 3. **No new axioms.** `scripts/AxiomAudit.lean` must stay green. `sorry` is
    allowed in statements as the work queue, never hidden in a definition.
 
