@@ -28,6 +28,7 @@ enumerates all of them.
 * **Must hold:** COPY and NOT force their output exactly on a pure input.
 * **MF3, must fail:** OR, AND and NAND are robust like NOR: one input that decides the
   result forces the output even if the other input is garbage [DFHM24, Section 2.1].
+* **Must hold:** every gate has the output nodes and the type label of its paper form.
 * **Must hold:** a cycle of three NOT gates has exactly the all-garbage solution.
 * **Must hold:** the gadgets of the proof of [DFHM24, Corollary 2.2] act exactly as the
   gate they simulate: PURIFY then NAND as NOT, OR then NOT as NOR.
@@ -160,6 +161,26 @@ example : ∀ c : Value, ((Gate.nand 0 1 2 : Gate 3).Satisfied ![.zero, .bot, c]
 
 /-- NAND on `1, ⊥` forces nothing. -/
 example : ∀ c : Value, (Gate.nand 0 1 2 : Gate 3).Satisfied ![.one, .bot, c] := by decide
+
+/-! ### Roles and labels
+
+Which node is an output is written twice, in `outputs` and in `Satisfied`, and the type
+of a gate twice, as its constructor and as `Gate.type`. Nothing in the definitions ties
+the two together; these tests do. -/
+
+/-- The output nodes: `v` for COPY and NOT, `v` and `w` for PURIFY, `w` for the others. -/
+example : (Gate.copy 0 1 : Gate 2).outputs = {1} ∧ (Gate.not 0 1 : Gate 2).outputs = {1} ∧
+    (Gate.nor 0 1 2 : Gate 3).outputs = {2} ∧ (Gate.purify 0 1 2 : Gate 3).outputs = {1, 2} ∧
+    (Gate.or 0 1 2 : Gate 3).outputs = {2} ∧ (Gate.and 0 1 2 : Gate 3).outputs = {2} ∧
+    (Gate.nand 0 1 2 : Gate 3).outputs = {2} := by
+  decide
+
+/-- Every gate carries the label of its own type. -/
+example : (Gate.copy 0 1 : Gate 2).type = .copy ∧ (Gate.not 0 1 : Gate 2).type = .not ∧
+    (Gate.nor 0 1 2 : Gate 3).type = .nor ∧ (Gate.purify 0 1 2 : Gate 3).type = .purify ∧
+    (Gate.or 0 1 2 : Gate 3).type = .or ∧ (Gate.and 0 1 2 : Gate 3).type = .and ∧
+    (Gate.nand 0 1 2 : Gate 3).type = .nand := by
+  decide
 
 /-! ### A NOT cycle -/
 
