@@ -68,7 +68,8 @@ the supervisor.
   the instance over `{NOR, PURIFY}`); adding the gates in step 5 (the
   instance type changes, so the frozen file would have to be unfrozen);
   `S` written as a literal at each use (`{NOR, PURIFY}` and `{PURIFY, NOR}`
-  are equal sets but not the same term, so the instance types would differ).
+  are equal sets but not definitionally equal terms, so the two instance
+  types would need a cast between them).
 - **Why:** Corollary 2.2 treats the gate set as a parameter of one problem,
   and so does the encoding. The instance conditions are written once, and a
   reduction between variants maps `Instance S n` to `Instance S' m`. The
@@ -214,22 +215,28 @@ the supervisor.
   `x u = ⊥` (equivalent, proved in the tests, but not the paper's wording).
 - **Why:** one Lean clause per paper clause for the side-by-side check. The
   must-fail tests MF1 and MF2 fail when either of the two relaxations of
-  Appendix A.1 is applied to these definitions.
+  Appendix A.1 is applied to these definitions, and MF3 fails when OR, AND
+  or NAND is relaxed the same way.
 
 ## D12. COPY and NOT are gates on two nodes
 
 - **Decision:** `copy (u v)` and `not (u v)` with input `u` and output `v`;
   `outputs` is `{v}` and `Distinct` is `u ≠ v`.
 - **Paper reference:** DFHM24, Section 2.1 (`g = (T, u, v)` for COPY and
-  NOT); Remark 2.
+  NOT); Definition 1 ("u, v, w ∈ V are distinct nodes").
 - **Encoding:** two constructor arguments instead of three, the node names
-  as in the paper.
+  as in the paper. `u ≠ v` is our reading: the paper requires distinct nodes
+  in Definition 1, and Section 2.1 defines the further gates without
+  restating it. Remark 2 treats distinct NOR/NAND inputs as part of the
+  definition, which supports carrying the requirement over to every gate.
 - **Rejected:** three nodes with an unused `w` (not in the paper, and `w`
   would need a dummy node that is the output of no gate); NOT as
   `NOR(u, u → v)` (Remark 2: repeated inputs change the definition, and D10
-  requires distinct nodes).
-- **Why:** literal match with the paper's `(T, u, v)`. Requiring `u ≠ v`
-  keeps the rule that a gate never reads its own output.
+  requires distinct nodes); allowing `u = v` for COPY and NOT.
+- **Why:** literal match with the paper's `(T, u, v)`. With `u = v`, NOT
+  would force `x[u] = ⊥` and COPY would constrain nothing; a gate that pins
+  a node to garbage is not among the paper's gates. To confirm with the
+  supervisor.
 
 ## Open
 

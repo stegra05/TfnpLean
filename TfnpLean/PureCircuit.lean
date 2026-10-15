@@ -132,7 +132,8 @@ def outputs : Gate n → Finset (Fin n)
   | .copy _ v | .not _ v => {v}
   | .nor _ _ w | .or _ _ w | .and _ _ w | .nand _ _ w => {w}
 
-/-- The nodes of a gate are distinct [DFHM24, Definition 1]. -/
+/-- The nodes of a gate are distinct [DFHM24, Definition 1]. Section 2.1 does not restate
+this for its gates; carrying it over to them is decision D12 in `docs/DESIGN.md`. -/
 def Distinct : Gate n → Prop
   | .copy u v | .not u v => u ≠ v
   | .nor u v w | .purify u v w | .or u v w | .and u v w | .nand u v w =>
