@@ -11,15 +11,16 @@ Logs live in the private workspace (../notes/ai-logs), never in this repo.
 If that directory does not exist (repo cloned alone), logs go to .ai-logs/.
 
 Events:
-  session_start   record session and HEAD, print notes/NOW.md as context
+  session_start   record session, HEAD and a content snapshot of the rationale and
+                  definition files, print notes/NOW.md as context
   prompt          full user prompt
   gate            PreToolUse on Edit/Write: definition gate + freeze gate
   file_edit       PostToolUse on Edit/Write: .lean edits (sorry count) and docs/*.md
   bash            PostToolUse on Bash: lake invocations with outcome; head_change
                   when a command moved this repo's HEAD (commit, checkout, reset)
   stop            sorry census and HEAD; blocks if (a) Lean edits without an interaction
-                  record, (b) definition edits without a DESIGN/PAPER_MAP edit (an
-                  Edit/Write event, or the file modified on disk since session start),
+                  record, (b) definition files changed without a DESIGN/PAPER_MAP change
+                  (an Edit/Write event, or content that differs from the snapshot),
                   (c) a frozen definition changed
   session_end     record HEAD, copy the transcript to the log dir (and the backup mirror)
 """
@@ -147,14 +148,25 @@ def session_records(path: Path, sid: str) -> list:
     return out
 
 
-def rationale_changed_on_disk(evs: list) -> bool:
-    """A rationale file modified after the session started, by any tool including the shell."""
-    starts = [e["ts"] for e in evs if e.get("ev") == "session_start" and e.get("ts")]
-    if not starts:
-        return False
-    start = datetime.fromisoformat(min(starts)).timestamp()
-    return any((ROOT / r).exists() and (ROOT / r).stat().st_mtime >= start
-               for r in RATIONALE_FILES)
+def tracked_files() -> set:
+    """Files whose content the stop gate compares: rationale files and definition files."""
+    defs = {str(p.relative_to(ROOT)) for p in (ROOT / "TfnpLean").rglob("*.lean")}
+    return RATIONALE_FILES | {r for r in defs if is_definition_file(r)}
+
+
+def snapshot() -> dict:
+    """Content hash per tracked file, taken at session start."""
+    return {r: sha(ROOT / r) for r in sorted(tracked_files()) if (ROOT / r).exists()}
+
+
+def changed_since_start(evs: list) -> set:
+    """Tracked files whose content differs from the session-start snapshot, whatever tool
+    changed them (Edit/Write, the shell, an editor). Empty if the session has no snapshot."""
+    snaps = [e["snapshot"] for e in evs if e.get("ev") == "session_start" and "snapshot" in e]
+    if not snaps:
+        return set()
+    before, after = snaps[0], snapshot()
+    return {r for r in before.keys() | after.keys() if before.get(r) != after.get(r)}
 
 
 def gate(payload: dict) -> None:
@@ -197,12 +209,15 @@ def stop(sid: str, payload: dict) -> None:
         return
     evs = session_records(EVENTS, sid)
     lean_edits = [e for e in evs if e.get("ev") == "file_edit" and e.get("file", "").endswith(".lean")]
-    def_edits = [e for e in lean_edits if is_definition_file(e.get("file", ""))]
-    rationale_edits = [e for e in evs if e.get("ev") == "file_edit" and e.get("file") in RATIONALE_FILES]
+    changed = changed_since_start(evs)
+    def_changed = ({e["file"] for e in lean_edits if is_definition_file(e.get("file", ""))} |
+                   {r for r in changed if is_definition_file(r)})
+    rationale_touched = (any(e.get("ev") == "file_edit" and e.get("file") in RATIONALE_FILES
+                             for e in evs) or bool(changed & RATIONALE_FILES))
     logged = session_records(INTERACTIONS, sid)
-    if def_edits and not rationale_edits and not rationale_changed_on_disk(evs):
+    if def_changed and not rationale_touched:
         block_stop("Definition or statement files were edited (" +
-                   ", ".join(sorted({e['file'] for e in def_edits})) +
+                   ", ".join(sorted(def_changed)) +
                    ") but docs/DESIGN.md and docs/PAPER_MAP.md were not touched. Every modelling "
                    "choice gets a DESIGN.md entry (decision, paper reference, encoding, rejected "
                    "alternative, why) and PAPER_MAP.md gets its status updated. Do that, then stop.")
@@ -230,7 +245,7 @@ def main() -> None:
         return
 
     if event == "session_start":
-        rec.update(source=payload.get("source"), head=record_head())
+        rec.update(source=payload.get("source"), head=record_head(), snapshot=snapshot())
         LOGS.mkdir(parents=True, exist_ok=True)
         if NOW_FILE.exists():
             print("Current focus (notes/NOW.md):\n" + NOW_FILE.read_text(encoding="utf-8").strip())
