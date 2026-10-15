@@ -18,26 +18,26 @@ public import TfnpLean.Results.PureCircuitVariants
 public import TfnpLean.Results.PureCircuitInPPAD
 public import TfnpLean.Results.PureCircuitPPADHard
 public import TfnpLean.Validation.SparseWinLose
-public import TfnpLean.Validation.CakeCutting
 public import TfnpLean.Tests.PureCircuit
 
 /-!
 # TfnpLean
 
 A Lean 4 library of verified definitions and theorem statements for total search
-problems: TFNP, PPAD, End-of-Line and Pure-Circuit, built on CSLib and Mathlib.
+problems: TFNP, PPAD, PLS and their canonical problems Pure-Circuit, End-of-Line and
+Localopt, built on CSLib and Mathlib.
 
-The build order follows the project plan:
+The library is built in layers:
 
-1. `TfnpLean.PureCircuit`: the Pure-Circuit problem (NOR, PURIFY) and the gates of its
-   variants, Mathlib only.
-2. `TfnpLean.SearchProblem`: search problems in general, Pure-Circuit as the first case.
-3. `TfnpLean.PolyTime`: polynomial time, taken from CSLib.
-4. `TfnpLean.TFNP`: the class TFNP.
-5. `TfnpLean.Reduction`: polynomial-time reductions between search problems.
-6. `TfnpLean.PPAD`: End-of-Line and PPAD, the first use of CSLib circuits.
+* Problems: `TfnpLean.PureCircuit` (Pure-Circuit and the gates of its variants,
+  Mathlib only), End-of-Line in `TfnpLean.PPAD`; Localopt to come. Whether they
+  share one circuit core is open (`docs/DESIGN.md`, D13).
+* Polynomial time: `TfnpLean.PolyTime`, an interface; the model behind it is open (D5).
+* Frame: `TfnpLean.SearchProblem`, `TfnpLean.TFNP`, `TfnpLean.Reduction`.
+* Classes: PPAD in `TfnpLean.PPAD` as the reduction closure of End-of-Line (D14);
+  PLS from Localopt to come.
 
 `Results/` holds the theorem statements that test the definitions, `Validation/` holds
-existing problems written in the library's terms, and `Tests/` holds the examples and
-must-fail cases from `docs/CHECKING.md`.
+results of existing papers restated in the library's terms, and `Tests/` holds the
+examples and must-fail cases from `docs/CHECKING.md`.
 -/

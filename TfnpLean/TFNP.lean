@@ -9,7 +9,7 @@ public import TfnpLean.SearchProblem
 public import TfnpLean.PolyTime
 
 /-!
-# Step 4: TFNP
+# TFNP
 
 **Status:** module docstring only.
 
@@ -17,8 +17,8 @@ public import TfnpLean.PolyTime
 
 The class TFNP: search problems where (1) a solution always exists, (2)
 solutions are polynomially short in the instance, and (3) checking a proposed
-solution is polynomial time. Conditions (2) and (3) use step 3; condition (1)
-is totality from step 2.
+solution is polynomial time. Conditions (2) and (3) use `TfnpLean.PolyTime`;
+condition (1) is totality from `TfnpLean.SearchProblem`.
 
 ## Dependencies
 

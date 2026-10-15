@@ -8,19 +8,19 @@ module
 public import TfnpLean.PureCircuit
 
 /-!
-# Step 2: Search problems
+# Search problems
 
 **Status:** module docstring only.
 
 ## What goes here
 
 The general notion of a search problem: an instance type, a solution type, and
-a relation saying which solutions count for which instance. Pure-Circuit from
-step 1 is the first case written in this form, and it is the test that the
-general shape fits a concrete problem.
+a relation saying which solutions count for which instance. Pure-Circuit is the
+first case written in this form, and it is the test that the general shape fits
+a concrete problem; End-of-Line and Localopt follow.
 
 Totality (every instance has a solution) is a property of a search problem and
-is stated here; the complexity conditions of TFNP come in step 4.
+is stated here; the complexity conditions of TFNP are in `TfnpLean.TFNP`.
 
 ## Dependencies
 

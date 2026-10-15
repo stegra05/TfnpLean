@@ -12,11 +12,10 @@ public import TfnpLean.PPAD
 
 **Status:** module docstring only.
 
-An existing problem written in the library's terms: finding an approximate
-Nash equilibrium of a 3-sparse win-lose bimatrix game, the problem of
-Batziou, Fearnley, Ghosh and Savani [BFGS26]. What "validation" means here
-(the problem can be written down with the definitions, or it is proven to be
-in the class) is an open question.
+An existing result restated in the library's terms: the main theorem of
+Batziou, Fearnley, Ghosh and Savani [BFGS26] on approximate Nash equilibria of
+3-sparse win-lose bimatrix games, written with library primitives only.
+Needing a primitive the library does not have shows a gap in the library.
 
 ## Dependencies
 

@@ -9,25 +9,27 @@ public import Cslib.Computability.Machines.Turing.SingleTape.Deterministic
 public import Cslib.Foundations.Data.BitString
 
 /-!
-# Step 3: Polynomial time (from CSLib)
+# Polynomial time
 
 **Status:** module docstring only.
 
 ## What goes here
 
-The connection between the library's search problems and CSLib's notion of
-polynomial-time computation, `Cslib.PolyTimeComputable` (a single-tape Turing
-machine packaged with a polynomial time bound). This step fixes how instances
-and solutions are encoded as strings so that "checking a solution is fast" and
-"the reduction maps are fast" can be stated in steps 4 and 5.
+An interface for polynomial-time computation, so that "checking a solution is
+fast" and "the reduction maps are fast" can be stated in `TfnpLean.TFNP` and
+`TfnpLean.Reduction` before the machine model is chosen (`docs/DESIGN.md`, D5).
+What stands behind the interface is open: a concrete machine model such as
+CSLib's `Cslib.PolyTimeComputable` on single-tape Turing machines (composition
+is `Cslib.PolyTimeComputable.comp`), an abstract cost model, or polynomial time
+as an explicit hypothesis. The encoding of instances and solutions as strings
+belongs to the concrete choice.
 
-The class FP itself is not in CSLib; it is stated here on top of
-`Cslib.PolyTimeComputable`. Composition of polynomial-time machines is
-`Cslib.PolyTimeComputable.comp`.
+The class FP is not in CSLib; it is stated here against the interface.
 
 ## Dependencies
 
-CSLib: `Cslib.Computability.Machines.Turing.SingleTape.Deterministic`,
+To be fixed with D5. Candidates in CSLib:
+`Cslib.Computability.Machines.Turing.SingleTape.Deterministic`,
 `Cslib.Foundations.Data.BitString`.
 
 ## Paper reference

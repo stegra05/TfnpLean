@@ -1,7 +1,8 @@
 # TfnpLean
 
 A Lean 4 library of checked definitions and theorem statements for total
-search problems: TFNP, PPAD, End-of-Line and Pure-Circuit. Built on
+search problems: TFNP, PPAD, PLS and their canonical problems Pure-Circuit,
+End-of-Line and Localopt. Built on
 [CSLib](https://github.com/leanprover/cslib) and Mathlib.
 
 Bachelor's thesis project at TUM, Chair of Decision Sciences & Systems.
@@ -23,25 +24,26 @@ definitions never do.
 
 ## Status
 
-Work in progress. Step 1 (Pure-Circuit) is drafted with tests and awaits
-supervisor review; the later modules contain module docstrings that say what goes there, what they depend on and
-which paper item they follow. Per-item status is tracked in
-[`docs/PAPER_MAP.md`](docs/PAPER_MAP.md).
+Work in progress. Pure-Circuit (Definition 1 and the gates of Section 2.1)
+is drafted with tests and awaits supervisor review; the other modules
+contain module docstrings that say what goes there and which paper item they
+follow. Per-item status is tracked in [`docs/PAPER_MAP.md`](docs/PAPER_MAP.md).
 
-| Step | Module | Content |
+The library is built in layers:
+
+| Layer | Content | Module |
 |---|---|---|
-| 1 | `TfnpLean.PureCircuit` | Pure-Circuit with NOR and PURIFY gates, Mathlib only |
-| 2 | `TfnpLean.SearchProblem` | search problems, Pure-Circuit as the first case |
-| 3 | `TfnpLean.PolyTime` | polynomial time, from CSLib's single-tape machines |
-| 4 | `TfnpLean.TFNP` | the class TFNP |
-| 5 | `TfnpLean.Reduction` | polynomial-time reductions between search problems |
-| 6 | `TfnpLean.PPAD` | End-of-Line and PPAD, the first use of CSLib circuits |
+| Problems | Pure-Circuit, End-of-Line, Localopt, on a shared circuit core (D13, open) | `TfnpLean.PureCircuit`, `TfnpLean.PPAD` |
+| Polynomial time | an abstract interface; the concrete model is open (D5) | `TfnpLean.PolyTime` |
+| Frame | search problems, TFNP, reductions and their closure | `TfnpLean.SearchProblem`, `TfnpLean.TFNP`, `TfnpLean.Reduction` |
+| Classes | PPAD and PLS as reduction closures of End-of-Line and Localopt (D14); PPA, PPP, PPADS and CLS later | `TfnpLean.PPAD` |
 
-`TfnpLean/Results/` holds theorem statements that test the definitions
-(End-of-Line is total, PPAD is contained in TFNP, Pure-Circuit is in PPAD
-and PPAD-hard, gate-set variants). `TfnpLean/Validation/` writes existing
-problems in the library's terms (sparse win-lose games, cake cutting).
-`TfnpLean/Tests/` holds the examples and must-fail cases.
+`TfnpLean/Results/` holds theorem statements: Pure-Circuit is PPAD-complete
+(membership and hardness), the gate-set variants, Sperner is in PPAD, and
+sanity theorems (End-of-Line is total, PPAD is contained in TFNP).
+`TfnpLean/Validation/` restates results of existing papers in the library's
+terms (sparse win-lose games). `TfnpLean/Tests/` holds the examples and
+must-fail cases.
 
 ## How a definition is checked
 
@@ -56,6 +58,10 @@ Every definition goes through four steps, described in
    reject.
 4. Review with the supervisor, after which the file is frozen
    (`scripts/freeze.py`); CI fails if a frozen file changes.
+
+The library as a whole is validated by sanity theorems, executable
+instances, a Python reference oracle, and theorems of existing papers
+restated with library primitives (`docs/CHECKING.md`).
 
 Every encoding choice, with the rejected alternative and the reason, is
 logged in [`docs/DESIGN.md`](docs/DESIGN.md).
@@ -114,7 +120,12 @@ Commit messages follow `define:`, `state:`, `test:`, `prove:`, `design:`,
 - C. H. Papadimitriou. On the complexity of the parity argument and other
   inefficient proofs of existence. JCSS 48(3), 1994.
 - C. Daskalakis, P. W. Goldberg, C. H. Papadimitriou. The complexity of
-  computing a Nash equilibrium. ECCC TR05-115, 2005.
+  computing a Nash equilibrium. ECCC TR05-115, 2005; SIAM J. Comput. 39(1),
+  2009.
+- D. S. Johnson, C. H. Papadimitriou, M. Yannakakis. How easy is local
+  search? JCSS 37(1), 1988.
+- J. Fearnley, P. W. Goldberg, A. Hollender, R. Savani. The complexity of
+  gradient descent: CLS = PPAD ∩ PLS. J. ACM 70(1), 2023. arXiv:2011.01929.
 - E. Batziou, J. Fearnley, A. Ghosh, R. Savani. The Complexity of Sparse
   Win-Lose Bimatrix Games. arXiv:2602.18380, 2026.
 

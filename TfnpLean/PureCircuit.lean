@@ -9,7 +9,7 @@ public import Mathlib.Data.Fintype.Basic
 public import Mathlib.Data.Finset.Card
 
 /-!
-# Step 1: Pure-Circuit
+# Pure-Circuit
 
 The Pure-Circuit problem of Deligkas, Fearnley, Hollender and Melissourgos
 [DFHM24, Definition 1]: a finite set of nodes, a set of gate constraints of type
@@ -39,6 +39,8 @@ Pure-Circuit is modelled as a constraint problem on nodes, not as a CSLib
 PURIFY has two outputs. See `docs/DESIGN.md`, decision D2. The gate set as a
 parameter of the instance is D3, the encoding choices for values, nodes, gates and
 the instance conditions are D7 to D11, and the two-node gates COPY and NOT are D12.
+Whether this type becomes a circuit core shared with End-of-Line and Localopt is
+open (D13).
 
 The paper's node set is `V = [n] = {1, ..., n}`; here it is `Fin n = {0, ..., n - 1}`.
 

@@ -9,18 +9,20 @@ public import TfnpLean.SearchProblem
 public import TfnpLean.PolyTime
 
 /-!
-# Step 5: Reductions
+# Reductions
 
 **Status:** module docstring only.
 
 ## What goes here
 
-Polynomial-time reductions between search problems: a map from instances of A
-to instances of B and a map from solutions of B back to solutions of A, both
-polynomial time (step 3), such that a solution of the translated instance maps
-back to a solution of the original instance. Reductions compose and are
-reflexive; the closure of a problem under reductions is what PPAD is built from
-in step 6.
+Polynomial-time reductions between search problems: a map `f` from instances of
+A to instances of B and a map `g` from solutions of B back to solutions of A,
+both polynomial time (`TfnpLean.PolyTime`), such that a solution of the
+translated instance maps back to a solution of the original instance.
+Reductions compose and the identity is a reduction; both are sanity theorems
+that test the definition. The closure of a problem under reductions is the one
+construction that PPAD (from End-of-Line) and PLS (from Localopt) are built from
+(`docs/DESIGN.md`, D14).
 
 The first reductions to be stated are the ones between Pure-Circuit gate-set
 variants, [DFHM24, Corollary 2.2]; their statements live in

@@ -71,8 +71,30 @@ where MF4 passes has lost the restriction to the gates of Definition 1.
 
 ## Later definitions
 
-Each of search problems, TFNP, reductions, End-of-Line and PPAD gets its own
-must-fail cases here before it is written. Candidates: a search problem that
-is not total is not in TFNP; a reduction whose solution map is not
-polynomial time is not a reduction; an End-of-Line instance where the
-all-zero vertex is not a source.
+Each of search problems, TFNP, reductions, End-of-Line, Localopt, PPAD and
+PLS gets its own must-fail cases here before it is written. Candidates: a
+search problem that is not total is not in TFNP; a reduction whose solution
+map is not polynomial time is not a reduction; an End-of-Line instance
+where the all-zero vertex is not a source (D15 decides what that instance
+means).
+
+## Validating the library
+
+The four steps check one definition at a time. Four further checks test
+the library as a whole:
+
+1. **Sanity theorems.** Small proofs that must hold if the definitions are
+   right: End-of-Line is total (parity argument), reductions compose, the
+   identity is a reduction, PPAD is contained in TFNP. These are the proofs
+   the library does carry, because they are evidence that the statements
+   mean what the papers mean.
+2. **Executable instances.** Tiny Pure-Circuit and End-of-Line instances,
+   evaluated with `decide` and compared with solutions worked out by hand
+   (step 2 above, kept for every problem).
+3. **Reference oracle.** Plain Python implementations of each problem, run
+   against the Lean definitions on generated instances. A disagreement
+   points at one side or the other.
+4. **Restating papers.** The main theorems of the Pure-Circuit paper and of
+   the sparse win-lose paper (Batziou, Fearnley, Ghosh, Savani 2026),
+   written with library primitives only. Needing a new primitive means the
+   library has a gap.
