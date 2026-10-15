@@ -43,23 +43,36 @@ the supervisor.
   maths. A definition that reads like Definition 1 is easier to check
   against the paper, which is the central deliverable.
 
-## D3. Gate set: NOR plus PURIFY is the definition, other gate sets are variants (to confirm)
+## D3. All gates of Section 2.1 in one gate type; the gate set is a parameter of the instance
 
-- **Decision:** the main definition uses exactly the gates of Definition 1.
-  The gate sets of Corollary 2.2 (PURIFY with NAND; PURIFY with NOT and OR
-  or AND) are variants, and the first reductions in the library are between
-  the variants and the main definition.
-- **Paper reference:** Definition 1, Section 2.1, Corollary 2.2.
-- **Encoding:** open. Either separate problem definitions per gate set or
-  one definition parametrised by a gate type with its relation. The
-  parametrised form avoids repeating the "every node is the output of
-  exactly one gate" invariant; the separate form keeps the main definition
-  readable next to the paper.
-- **Rejected:** a single definition with all seven gates (COPY, NOT, OR,
-  AND, NAND, NOR, PURIFY) as the main object. It is not what the paper
-  calls Pure-Circuit and makes the must-fail tests less sharp.
-- **Why:** build step 5 of the project plan: the first reduction can stay
-  inside Pure-Circuit. To confirm with the supervisor.
+- **Decision:** `Gate n` has a constructor for each of the seven gates
+  (COPY, NOT, OR, AND, NAND, NOR, PURIFY). `Instance S n` takes a gate set
+  `S : Finset GateType` and requires every gate to have a type in `S`.
+  Pure-Circuit as in Definition 1 is `S = {NOR, PURIFY}`; the choices of
+  Corollary 2.2 are further values of `S`. Each gate set used in a statement
+  is a named `Finset GateType`: `norPurify` for Definition 1; the sets of
+  Corollary 2.2 are named together with their statements in step 5.
+- **Paper reference:** Definition 1, Section 2.1 ("More gates"), Corollary 2.2
+  ("for any of the following choices of gate types"), Corollary 2.3.
+- **Encoding:** `GateType` is a label with one constructor per gate,
+  `Gate.type` maps a gate to its label, and the instance field `allowed`
+  (D10) restricts the gates. The gates are defined in step 1 together with
+  Definition 1, so `TfnpLean/PureCircuit.lean` is frozen once; the
+  reductions between the variants stay in step 5.
+- **Rejected:** separate problem definitions per gate set (repeats the
+  instance conditions for every variant, and the reductions of Corollary 2.2
+  would map between unrelated types); an unrestricted `Instance n` with a
+  separate predicate "uses only gates from `S`" (every later definition
+  would have to remember it, against D10); the seven-gate instance as the
+  main object (not what the paper calls Pure-Circuit; the main object is
+  the instance over `{NOR, PURIFY}`); adding the gates in step 5 (the
+  instance type changes, so the frozen file would have to be unfrozen);
+  `S` written as a literal at each use (`{NOR, PURIFY}` and `{PURIFY, NOR}`
+  are equal sets but not the same term, so the instance types would differ).
+- **Why:** Corollary 2.2 treats the gate set as a parameter of one problem,
+  and so does the encoding. The instance conditions are written once, and a
+  reduction between variants maps `Instance S n` to `Instance S' m`. The
+  must-fail tests stay sharp because every test fixes its gate set.
 
 ## D4. Lean module system and CSLib file conventions
 
@@ -121,28 +134,36 @@ the supervisor.
 
 ## D8. Nodes are `Fin n`, with `n` a parameter of the instance type
 
-- **Decision:** the node set is `Fin n`; an instance has type `Instance n`
-  and an assignment has type `Fin n → Value`.
+- **Decision:** the node set is `Fin n`; an instance has type `Instance S n`
+  (gate set `S`, D3) and an assignment has type `Fin n → Value`.
 - **Paper reference:** DFHM24, Definition 1 (`V = [n]`).
-- **Encoding:** `Gate n` and `Instance n` are indexed by `n : ℕ`. Lean counts
+- **Encoding:** `Gate n` and `Instance S n` are indexed by `n : ℕ`. Lean counts
   from `0`, the paper from `1`; nodes are shifted by one.
 - **Rejected:** any type `V` with `[Fintype V] [DecidableEq V]`. More general,
   but the paper fixes `[n]`, and encoding instances for polynomial time
   (step 3) needs a numbering of the nodes anyway.
 - **Why:** literal match with the paper, and `decide` checks small instances
-  directly. The search-problem step bundles the size as `Σ n, Instance n`.
+  directly. The search-problem step bundles the size as `Σ n, Instance S n`,
+  with `S` fixed per problem.
 
-## D9. A gate is an inductive with one constructor per type; the gate set is a `Finset`
+## D9. A gate is an inductive with one constructor per type; an instance's gates are a `Finset`
 
-- **Decision:** `Gate n` has constructors `nor (u v w)` and `purify (u v w)`;
-  an instance holds `gates : Finset (Gate n)`.
+- **Decision:** `Gate n` has constructors `nor (u v w)` and `purify (u v w)`
+  for Definition 1, and `copy (u v)`, `not (u v)`, `or (u v w)`,
+  `and (u v w)`, `nand (u v w)` for Section 2.1 (D3, D12); an instance holds
+  `gates : Finset (Gate n)`.
 - **Paper reference:** DFHM24, Definition 1 (`g = (T, u, v, w)`, "a set G of
   gate-constraints").
 - **Encoding:** the type `T` is the constructor; the node names `u`, `v`, `w`
   and their roles (NOR: inputs `u`, `v`, output `w`; PURIFY: input `u`,
   outputs `v`, `w`) follow the paper. `Gate.outputs` lists the output nodes.
-- **Rejected:** a structure `(T, u, v, w)` with a separate `GateType`
-  (literal, but the semantics would match on a field instead of the gate);
+  `Gate.type : Gate n → GateType` labels a gate for gate sets (D3); the
+  semantics still match on the gate itself. `GateType` repeats the seven
+  names, but `Gate.type` is an exhaustive match, so a gate without a label
+  does not compile.
+- **Rejected:** a structure `(T, u, v, w)` with a `GateType` field
+  (literal, but the semantics would match on a field instead of the gate,
+  and COPY and NOT have only two nodes);
   role names `in₁ in₂ out` and `input out₁ out₂` (self-explaining, but the
   side-by-side would need a renaming); `List (Gate n)` (order and duplicates
   have no meaning in the paper).
@@ -151,12 +172,13 @@ the supervisor.
 
 ## D10. The instance conditions are proof fields of `Instance`
 
-- **Decision:** `Instance n` is a structure with `gates`, `distinct : ∀ g ∈
-  gates, g.Distinct` and `output_unique : OutputUnique gates`, where
+- **Decision:** `Instance S n` is a structure with `gates`, `allowed : ∀ g ∈
+  gates, g.type ∈ S`, `distinct : ∀ g ∈ gates, g.Distinct` and
+  `output_unique : OutputUnique gates`, where
   `OutputUnique G := ∀ i, ∃! g, g ∈ G ∧ i ∈ g.outputs`.
 - **Paper reference:** DFHM24, Definition 1 ("u, v, w ∈ V are distinct
   nodes", "each node is the output of exactly one gate"); Remark 2 (allowing
-  `u = v` changes the definition).
+  `u = v` changes the definition); Corollary 2.2 for the gate set.
 - **Encoding:** `∃!` copies "exactly one". A `Decidable` instance proves it
   equivalent to "the number of gates with output `i` is 1", so `decide`
   checks instances. Distinctness is a predicate on gates, required by the
@@ -182,7 +204,8 @@ the supervisor.
 - **Decision:** `Gate.Satisfied g x` is the conjunction of the paper's
   clauses for the gate's type, written as in the paper's left column.
 - **Paper reference:** DFHM24, Definition 1, gate constraints for NOR and
-  PURIFY.
+  PURIFY; Section 2.1 for COPY, NOT, OR, AND, NAND, which follow the same
+  rule.
 - **Encoding:** NOR: `x u = 0 ∧ x v = 0 → x w = 1` and `x u = 1 ∨ x v = 1 →
   x w = 0`. PURIFY: `(x v).IsPure ∨ (x w).IsPure` and `(x u).IsPure → x v =
   x u ∧ x w = x u`. Cases no implication names leave the output free.
@@ -192,6 +215,21 @@ the supervisor.
 - **Why:** one Lean clause per paper clause for the side-by-side check. The
   must-fail tests MF1 and MF2 fail when either of the two relaxations of
   Appendix A.1 is applied to these definitions.
+
+## D12. COPY and NOT are gates on two nodes
+
+- **Decision:** `copy (u v)` and `not (u v)` with input `u` and output `v`;
+  `outputs` is `{v}` and `Distinct` is `u ≠ v`.
+- **Paper reference:** DFHM24, Section 2.1 (`g = (T, u, v)` for COPY and
+  NOT); Remark 2.
+- **Encoding:** two constructor arguments instead of three, the node names
+  as in the paper.
+- **Rejected:** three nodes with an unused `w` (not in the paper, and `w`
+  would need a dummy node that is the output of no gate); NOT as
+  `NOR(u, u → v)` (Remark 2: repeated inputs change the definition, and D10
+  requires distinct nodes).
+- **Why:** literal match with the paper's `(T, u, v)`. Requiring `u ≠ v`
+  keeps the rule that a gate never reads its own output.
 
 ## Open
 

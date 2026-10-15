@@ -42,11 +42,32 @@ input is garbage. A definition that only constrains NOR on pure inputs
 passes this test wrongly and, by Appendix A.1, defines a polynomial-time
 problem.
 
+### MF3. Pure-Circuit: OR, AND and NAND are robust
+
+Gates: OR(u, v → w), AND(u, v → w), NAND(u, v → w) [DFHM24, Section 2.1].
+Assignment: one input decides the result (`1` for OR, `0` for AND and
+NAND), the other input is `⊥`, in either position.
+Expected: the output is forced (`1`, `0`, `1`); every other output is
+rejected. The analogue of MF2 for the gates of Section 2.1.
+Control: OR on `0, ⊥`, AND and NAND on `1, ⊥` accept every output.
+
+### MF4. Pure-Circuit: the gate set is enforced
+
+Gate set: NOT(0 → 1), NOT(1 → 0). It is a valid instance over `{NOT}`.
+Expected: there is no instance over `norPurify` with these gates. The
+field `allowed` is the only condition that rejects them, so a definition
+where MF4 passes has lost the restriction to the gates of Definition 1.
+
 ### Must-hold controls
 
 - The three-node instance has exactly the solutions `(⊥, 0, ⊥)` and
   `(⊥, ⊥, 0)` (worked by hand).
 - PURIFY on a pure input copies it to both outputs.
+- COPY and NOT force their output exactly on a pure input.
+- A cycle of three NOT gates has exactly the all-`⊥` solution.
+- PURIFY followed by NAND on its two outputs acts exactly as NOT, and OR
+  followed by NOT acts exactly as NOR (the gadgets of the proof of
+  Corollary 2.2).
 
 ## Later definitions
 

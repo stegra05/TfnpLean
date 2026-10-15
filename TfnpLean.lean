@@ -29,7 +29,8 @@ problems: TFNP, PPAD, End-of-Line and Pure-Circuit, built on CSLib and Mathlib.
 
 The build order follows the project plan:
 
-1. `TfnpLean.PureCircuit`: the Pure-Circuit problem (NOR, PURIFY), Mathlib only.
+1. `TfnpLean.PureCircuit`: the Pure-Circuit problem (NOR, PURIFY) and the gates of its
+   variants, Mathlib only.
 2. `TfnpLean.SearchProblem`: search problems in general, Pure-Circuit as the first case.
 3. `TfnpLean.PolyTime`: polynomial time, taken from CSLib.
 4. `TfnpLean.TFNP`: the class TFNP.

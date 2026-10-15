@@ -18,12 +18,15 @@ cake cutting.
 |---|---|---|---|
 | DFHM24 Def. 1: node values 0, 1, ⊥ | `TfnpLean.PureCircuit.Value` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: gate (NOR, PURIFY) | `TfnpLean.PureCircuit.Gate` | `TfnpLean/PureCircuit.lean` | drafted |
-| DFHM24 Def. 1: instance (distinct nodes and exactly-one rule as fields) | `TfnpLean.PureCircuit.Instance` | `TfnpLean/PureCircuit.lean` | drafted |
+| DFHM24 Def. 1: instance (gate set, distinct nodes and exactly-one rule as fields) | `TfnpLean.PureCircuit.Instance` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: every node output of exactly one gate | `TfnpLean.PureCircuit.OutputUnique` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: NOR satisfied | `TfnpLean.PureCircuit.Gate.Satisfied` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: PURIFY satisfied | `TfnpLean.PureCircuit.Gate.Satisfied` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Def. 1: solution | `TfnpLean.PureCircuit.Instance.IsSolution` | `TfnpLean/PureCircuit.lean` | drafted |
-| DFHM24 §2.1: gates COPY, NOT, OR, AND, NAND | | `TfnpLean/PureCircuit.lean` | planned |
+| DFHM24 §2.1: gates COPY, NOT, OR, AND, NAND | `TfnpLean.PureCircuit.Gate` | `TfnpLean/PureCircuit.lean` | drafted |
+| DFHM24 §2.1: COPY, NOT, OR, AND, NAND satisfied | `TfnpLean.PureCircuit.Gate.Satisfied` | `TfnpLean/PureCircuit.lean` | drafted |
+| DFHM24 Cor. 2.2: choice of gate types | `TfnpLean.PureCircuit.GateType`, `TfnpLean.PureCircuit.norPurify`, field `Instance.allowed` | `TfnpLean/PureCircuit.lean` | drafted |
+| DFHM24 Cor. 2.2 proof: NOT from PURIFY and NAND, NOR from OR and NOT | `TfnpLean.PureCircuit.Tests.notGadget`, `TfnpLean.PureCircuit.Tests.norGadget` | `TfnpLean/Tests/PureCircuit.lean` | drafted |
 | DFHM24 Cor. 2.2: variants reduce to NOR + PURIFY | | `TfnpLean/Results/PureCircuitVariants.lean` | planned |
 | DFHM24 Thm. 2.1: Pure-Circuit in PPAD | | `TfnpLean/Results/PureCircuitInPPAD.lean` | planned, scope open |
 | DFHM24 Thm. 2.1: Pure-Circuit PPAD-hard (statement only) | | `TfnpLean/Results/PureCircuitPPADHard.lean` | planned, proposed, to confirm; proof out of scope |
