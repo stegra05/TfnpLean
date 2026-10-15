@@ -18,7 +18,8 @@ Events:
   bash            PostToolUse on Bash: lake invocations with outcome; head_change
                   when a command moved this repo's HEAD (commit, checkout, reset)
   stop            sorry census and HEAD; blocks if (a) Lean edits without an interaction
-                  record, (b) definition edits without a DESIGN/PAPER_MAP edit,
+                  record, (b) definition edits without a DESIGN/PAPER_MAP edit (an
+                  Edit/Write event, or the file modified on disk since session start),
                   (c) a frozen definition changed
   session_end     record HEAD, copy the transcript to the log dir (and the backup mirror)
 """
@@ -146,6 +147,16 @@ def session_records(path: Path, sid: str) -> list:
     return out
 
 
+def rationale_changed_on_disk(evs: list) -> bool:
+    """A rationale file modified after the session started, by any tool including the shell."""
+    starts = [e["ts"] for e in evs if e.get("ev") == "session_start" and e.get("ts")]
+    if not starts:
+        return False
+    start = datetime.fromisoformat(min(starts)).timestamp()
+    return any((ROOT / r).exists() and (ROOT / r).stat().st_mtime >= start
+               for r in RATIONALE_FILES)
+
+
 def gate(payload: dict) -> None:
     """PreToolUse: deny edits to gated library files unless unlocked, never if frozen."""
     file_path = (payload.get("tool_input") or {}).get("file_path") or ""
@@ -189,7 +200,7 @@ def stop(sid: str, payload: dict) -> None:
     def_edits = [e for e in lean_edits if is_definition_file(e.get("file", ""))]
     rationale_edits = [e for e in evs if e.get("ev") == "file_edit" and e.get("file") in RATIONALE_FILES]
     logged = session_records(INTERACTIONS, sid)
-    if def_edits and not rationale_edits:
+    if def_edits and not rationale_edits and not rationale_changed_on_disk(evs):
         block_stop("Definition or statement files were edited (" +
                    ", ".join(sorted({e['file'] for e in def_edits})) +
                    ") but docs/DESIGN.md and docs/PAPER_MAP.md were not touched. Every modelling "
