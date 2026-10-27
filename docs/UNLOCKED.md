@@ -12,3 +12,4 @@ Unlocked now:
 
 - TfnpLean/PureCircuit.lean
 - TfnpLean/Results/PureCircuitVariants.lean
+- TfnpLean/PPAD.lean

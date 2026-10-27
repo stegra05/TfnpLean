@@ -272,7 +272,7 @@ A revised decision keeps its number and records what it replaced.
   a node to garbage is not among the paper's gates. To confirm with the
   supervisor.
 
-## D13. One circuit core for Pure-Circuit, End-of-Line and Localopt (open)
+## D13. Separate circuit types: Pure-Circuit constraints, CSLib circuits for End-of-Line (proposed)
 
 - **Question:** Do the three canonical problems share one circuit type?
 - **Date:** 2026-10-15
@@ -280,17 +280,26 @@ A revised decision keeps its number and records what it replaced.
   all three; (b) a separate type per problem; (c) the constraint model of
   D2 for Pure-Circuit and CSLib's `Cslib.Circuits.Circuit` for End-of-Line
   and Localopt.
-- **Decision:** OPEN, proposed (a). To settle before End-of-Line is
-  written, and before `PureCircuit.lean` is frozen, since (a) changes its
-  types.
+- **Decision:** (c), proposed (2026-10-27, to confirm with the
+  supervisor on 2026-10-28). Pure-Circuit keeps the constraint type of D2;
+  End-of-Line's `S` and `P` are `Cslib.Circuits.Circuit` over the Boolean
+  signature (D19); Localopt is expected to follow End-of-Line.
 - **Paper reference:** DFHM24, Definition 1 (constraints on a possibly
   cyclic graph over `{0, 1, ⊥}`, solved by an assignment); Pap94 and DGP05
   Section 3, p. 3 (End-of-Line's `S` and `P` as Boolean circuits that are
   evaluated); FGHS (arXiv:2011.01929) Definition 2 (Localopt's circuits).
 - **Why:** with (b), three circuit types drift apart and every reduction
-  between the problems translates between them. The open part is whether
-  one core can be both a relation (Pure-Circuit) and a function to evaluate
-  (End-of-Line, Localopt) without reading less like either paper.
+  between the problems translates between them. Against (a): a CSLib
+  `Circuit` is an acyclic straight-line program that is evaluated
+  (`Circuit.eval`, `Program.trace`); a Pure-Circuit instance is a set of
+  constraints on a possibly cyclic graph, solved by an assignment. One type
+  for both would either forbid Pure-Circuit's cycles or give End-of-Line a
+  circuit it cannot evaluate. Reductions between the two problems translate
+  anyway, because the objects differ in the papers too (DFHM24 Definition 1
+  versus DGP09 "two circuits S and P"). With (c), End-of-Line reuses CSLib's
+  evaluation, composition (`Circuit.comp`, `Circuit.append`) and
+  completeness of the basis instead of a second circuit library.
+- **History:** until 2026-10-27 OPEN with (a) proposed.
 
 ## D14. Classes are reduction closures of their canonical problems (proposed)
 
@@ -317,14 +326,118 @@ A revised decision keeps its number and records what it replaced.
   variants (for example whether `0^n` must be a source or counts as a
   solution when it is not) are separate definitions related by reductions,
   if needed at all.
+  End-of-Line (2026-10-27, to confirm 2026-10-28): DGP09, SIAM J. Comput.
+  39(1), Section 3.1, p. 202 (the same text as DGP05, ECCC TR05-115,
+  Section 3, p. 3). Rejected for End-of-Line: Pap94 Section 2, p. 506
+  (a machine returning a (predecessor, successor) pair, solutions are
+  degree-one vertices; further from circuits); FGHS Definition 1, p. 13
+  (the same definition on `[2^n]` numbered from 1; an encoding, not a
+  different reading); "sinks only", which defines PPADS, not PPAD (DGP09
+  p. 202).
 - **Rejected:** a definition that merges variants, or one that follows no
   single text.
-- **Why:** the variants are equivalent in complexity but different as Lean
-  definitions, and the side-by-side check (`CHECKING.md`) needs one text to
-  compare with.
+- **Why:** the variants that define the same class are still different
+  Lean definitions, and the side-by-side check (`CHECKING.md`) needs one
+  text to compare with. (Not every variant defines the same class: sinks
+  only gives PPADS.) DGP09 is the formulation later papers use (FGHS copies
+  it), and its solution condition is checked by two circuit evaluations.
+
+## D16. End-of-Line vertices are `Fin n → Bool`
+
+- **Question:** What is the vertex set of an End-of-Line instance?
+- **Date:** 2026-10-27
+- **Decision:** `EndOfLine.Vertex n := Fin n → Bool`, the paper's `{0, 1}^n`,
+  with `EndOfLine.zeros : Vertex n := fun _ => false` for `0^n`.
+- **Paper reference:** DGP09, Section 3.1, p. 202 ("each with n input bits
+  and n output bits", "x ∈ {0,1}^n").
+- **Encoding:** the input and output type of a CSLib `Circuit σ n n` under an
+  interpretation in `Bool` is `Fin n → Bool`, so `S.eval` and `P.eval` act on
+  vertices without conversion. `DecidableEq` and `Fintype` are inherited;
+  `2^n` appears only as `Fintype.card (Vertex n)` in the totality argument,
+  never in the definition.
+- **Rejected:** `BitVec n` (readable literals, but every circuit call needs a
+  conversion in both directions); `Fin (2^n)` (FGHS's `[2^n]`, a numbering
+  the paper does not use, and again a conversion to bits).
+- **Why:** the composite `P(S(x))` forces one type for the output of `S`, the
+  input of `P` and the vertices; taking the circuits' own type makes the
+  side-by-side table literal.
+
+## D17. The End-of-Line solution condition is the paper's formula, on functions
+
+- **Question:** Where and how is "x is a solution" written?
+- **Date:** 2026-10-27
+- **Decision:** two layers. `EndOfLine.IsSolution (S P : Vertex n → Vertex n)
+  (x : Vertex n) : Prop := P (S x) ≠ x ∨ (S (P x) ≠ x ∧ x ≠ zeros)` is stated
+  on plain functions, as the paper writes it. `Instance.IsSolution` applies
+  it to `S.eval` and `P.eval`. The graph reading is defined alongside, not
+  instead: `Edge S P x y := S x = y ∧ P y = x`, `IsSink`, `IsSource`, and
+  the bridge `IsSolution S P x ↔ IsSink S P x ∨ (IsSource S P x ∧ x ≠ zeros)`
+  is a statement in `Results/` (D6 style: stated, proved when asked).
+- **Paper reference:** DGP09, Section 3.1, p. 202: the definition ("find an
+  input x such that P(S(x)) ≠ x or S(P(x)) ≠ x ≠ 0^n") and the next
+  paragraph ("Intuitively ... an edge from x to y whenever both y = S(x) and
+  x = P(y)"; "We seek either a sink, or a source other than 0^n").
+- **Rejected:** the condition written only inside `Instance` on the circuit
+  evaluations (every hand example and the totality argument would then need
+  CSLib circuits computing the example tables); defining a solution as "sink
+  or source ≠ 0^n" with the formula as a theorem (reads well, but puts the
+  paper's definition one unproved theorem away from the Lean definition).
+- **Why:** the formula is the paper's definition, so the side-by-side table
+  has no divergence row; the edge vocabulary is what the walkthrough uses to
+  explain it; the function layer is where examples are checked by `decide`
+  and where reductions argue about what their circuits compute. `≠ 0^n`
+  stays in the second clause: the instance condition (D18) makes `0^n` a
+  source in every instance, so without it `0^n` would always be a solution.
+
+## D18. The condition on `0^n` is a proof field of `Instance` (proposed)
+
+- **Question:** How is "such that P(0^n) = 0^n ≠ S(0^n)" enforced?
+- **Date:** 2026-10-27, to confirm with the supervisor on 2026-10-28
+- **Decision:** `Instance n` has a field `source : P.eval i zeros = zeros ∧
+  S.eval i zeros ≠ zeros` (with `i` the Boolean interpretation), in the
+  style of D10.
+- **Paper reference:** DGP09, Section 3.1, p. 202 ("such that
+  P(0^n) = 0^n ≠ S(0^n)").
+- **Rejected:** no field, with a third clause making `0^n` a solution when
+  the condition fails ("violations count as solutions"; every pair of
+  circuits becomes an instance, but the clause is not in DGP09's text and
+  needs a source of its own); enforcing the condition by a circuit
+  construction wrapping any pair `(S, P)` (FGHS p. 13, "can be enforced
+  syntactically"; a construction with a correctness proof before the first
+  instance exists).
+- **Why:** it is the paper's "such that", an invalid instance cannot be
+  built, and totality is a clean theorem over all instances. The price is
+  that a reduction to End-of-Line must produce the proof, which is two
+  circuit evaluations. If the TFNP layer later requires every string to be
+  an instance, the switch to the rejected first option is local to this
+  entry and to `Instance`.
+
+## D19. End-of-Line circuits are CSLib Boolean circuits, `n` a type parameter
+
+- **Question:** What are `S` and `P`, and where does the definition live?
+- **Date:** 2026-10-27
+- **Decision:** `S P : Cslib.Circuits.Circuit Cslib.Circuits.Boolean.signature
+  n n`, evaluated with `Cslib.Circuits.Boolean.interpretation` (constants,
+  NOT, AND, OR). `Instance n` is indexed by `n : ℕ` as in D8. The definitions
+  live in `TfnpLean/PPAD.lean`, namespace `TfnpLean.EndOfLine`, next to the
+  planned PPAD (D14), which waits on reductions and D5.
+- **Paper reference:** DGP09, Section 3.1, p. 202 ("two circuits S and P");
+  the basis is not fixed there. Arora and Barak, Section 6.1 (the standard
+  Boolean circuit model, which CSLib cites).
+- **Rejected:** a generic signature `σ` with an interpretation in `Bool` as a
+  parameter of `Instance` (generality without a use); `n` as a field (the
+  vertex type depends on it); a separate `EndOfLine.lean` (the plan keeps
+  End-of-Line and PPAD together; split when PPAD arrives if the file grows).
+- **Why:** the basis does not change which `x` are solutions (D17 depends
+  only on the functions computed), and it is complete, so every function on
+  `n` bits has a circuit; a change of complete basis changes sizes by a
+  constant factor, which the polynomial-time layer (D5) tolerates. Not a
+  divergence from the paper, but a choice, so it is logged.
 
 ## Open
 
 - Namespace: `TfnpLean` for now; a CSLib contribution would use `Cslib`.
-- Polynomial time (D5) and the circuit core (D13).
-- Which text End-of-Line and Localopt follow (D15).
+- Polynomial time (D5).
+- The circuit core (D13) and the `0^n` condition (D18): proposed, supervisor
+  review 2026-10-28.
+- Which text Localopt follows (D15).
