@@ -19,6 +19,7 @@ public import TfnpLean.Results.PureCircuitInPPAD
 public import TfnpLean.Results.PureCircuitPPADHard
 public import TfnpLean.Validation.SparseWinLose
 public import TfnpLean.Tests.PureCircuit
+public import TfnpLean.Tests.EndOfLine
 
 /-!
 # TfnpLean

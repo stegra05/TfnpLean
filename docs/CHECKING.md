@@ -69,14 +69,52 @@ where MF4 passes has lost the restriction to the gates of Definition 1.
   followed by NOT acts exactly as NOR (the gadgets of the proof of
   Corollary 2.2).
 
+### E1. End-of-Line: `0^n` is not a solution while it keeps its out-edge
+
+Instance: example 1, the line `00 → 01 → 11 → 10` (tables `S₁`, `P₁` in
+`TfnpLean/Tests/EndOfLine.lean`). Candidate: `x = 00`.
+Expected: not a solution. `P(S(00)) = 00`, and the second clause requires
+`x ≠ 0^n`. The instance condition makes `0^n` a source in every instance,
+so a definition without `≠ 0^n` would accept `0^n` always: a trivial
+problem [DGP09, p. 202, "a source other than 0^n"].
+
+### E2. End-of-Line: an edge needs `S` and `P` to agree
+
+Instance: example 1. `S(10) = 00` but `P(00) = 00 ≠ 10`.
+Expected: no edge `10 → 00`, and `10` is a sink. A definition with edges
+from `S` alone would read example 1 as a cycle without ends, and the
+problem would not be total.
+
+### E3. End-of-Line: the condition on `0^n` is needed
+
+Instance: `S = P = id`.
+Expected: not an instance (the field `source` cannot be proved); as
+functions, no vertex is a solution. A definition without the condition
+would have instances without solutions.
+
+### E4. End-of-Line, control: `0^n` can lose its out-edge
+
+Instance: example 1 with `P(01) = 11`. Condition on `0^n` still holds.
+Expected: `00` is a solution by the first clause, `P(S(00)) ≠ 00`. The
+`≠ 0^n` is only in the second clause.
+
+### Must-hold controls, End-of-Line
+
+- Example 1 has exactly the solution `10`, a sink; example 2 (`00 → 01`,
+  `10 → 11`) has exactly the solutions `01`, `11` (sinks) and `10` (a
+  source other than `0^n`); both worked by hand on 2026-10-27.
+- On both examples the formula agrees with "a sink, or a source other than
+  `0^n`" (the bridge of D17, checked by `decide` for `n = 2`).
+- The one-bit instance `S = NOT`, `P = 0` built from CSLib circuits
+  satisfies the condition on `0^n` by `decide` and has exactly the solution
+  `1`.
+
 ## Later definitions
 
-Each of search problems, TFNP, reductions, End-of-Line, Localopt, PPAD and
-PLS gets its own must-fail cases here before it is written. Candidates: a
-search problem that is not total is not in TFNP; a reduction whose solution
-map is not polynomial time is not a reduction; an End-of-Line instance
-where the all-zero vertex is not a source (D15 decides what that instance
-means).
+Each of search problems, TFNP, reductions, Localopt, PPAD and PLS gets its
+own must-fail cases here before it is written. Candidates: a search problem
+that is not total is not in TFNP; a reduction whose solution map is not
+polynomial time is not a reduction.
 
 ## Validating the library
 

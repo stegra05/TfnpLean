@@ -42,7 +42,12 @@ cake cutting.
 | MP91 §1: TFNP | | `TfnpLean/TFNP.lean` | planned |
 | Pap94 §2: polynomial-time reduction | | `TfnpLean/Reduction.lean` | planned |
 | Sanity: reductions compose, the identity is a reduction | | `TfnpLean/Reduction.lean` | planned |
-| Pap94 §2, DGP05 §3 p. 3, DGP09 §3.1 p. 202: End-of-Line | | `TfnpLean/PPAD.lean` | planned, variant to choose (D15) |
+| DGP09 §3.1 p. 202: vertices {0,1}^n, 0^n | `TfnpLean.EndOfLine.Vertex`, `TfnpLean.EndOfLine.zeros` | `TfnpLean/PPAD.lean` | drafted |
+| DGP09 §3.1 p. 202: End-of-Line solution condition (on functions) | `TfnpLean.EndOfLine.IsSolution` | `TfnpLean/PPAD.lean` | drafted |
+| DGP09 §3.1 p. 202: edge x → y iff y = S(x) and x = P(y); sink, source | `TfnpLean.EndOfLine.Edge`, `TfnpLean.EndOfLine.IsSink`, `TfnpLean.EndOfLine.IsSource` | `TfnpLean/PPAD.lean` | drafted |
+| DGP09 §3.1 p. 202: End-of-Line instance (two circuits, P(0^n) = 0^n ≠ S(0^n) as a field) | `TfnpLean.EndOfLine.Instance` | `TfnpLean/PPAD.lean` | drafted, D13 and D18 proposed |
+| DGP09 §3.1 p. 202: solution of an instance | `TfnpLean.EndOfLine.Instance.IsSolution` | `TfnpLean/PPAD.lean` | drafted |
+| DGP09 §3.1 p. 202: "a sink, or a source other than 0^n" equals the formula | | `TfnpLean/Results/EndOfLineTotal.lean` | planned (D17 bridge) |
 | Pap94 §2: PPAD, PPAD-hard, PPAD-complete | | `TfnpLean/PPAD.lean` | planned, as a reduction closure (D14) |
 | Pap94 §2: End-of-Line is total | | `TfnpLean/Results/EndOfLineTotal.lean` | planned |
 | Folklore: circuit evaluation in polynomial time | | `TfnpLean/Results/CircuitEvalPolyTime.lean` | planned, depends on D5 |
