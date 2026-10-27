@@ -21,7 +21,7 @@ A revised decision keeps its number and records what it replaced.
   author and not community reviewed. It stays a reference for shapes.
   Also rejected: Mathlib only, which would mean writing a machine model.
 - **Why:** CSLib has circuits, Turing machines and polynomial time
-  (`Cslib.PolyTimeComputable`) and is reviewed and hosted by the Lean
+  (`Cslib.Turing.SingleTapeTM.PolyTimeComputable`) and is reviewed and hosted by the Lean
   organisation. Contributing back is a possible end goal, which fixes
   conventions now: module system, copyright headers, namespace style.
 
@@ -102,7 +102,7 @@ A revised decision keeps its number and records what it replaced.
   and the classes?
 - **Date:** 2026-10-15 (first decided 2026-10-08)
 - **Options:** (a) a concrete machine model, such as
-  `Cslib.PolyTimeComputable` on CSLib's single-tape machines or Mathlib's
+  `Cslib.Turing.SingleTapeTM.PolyTimeComputable` on CSLib's single-tape machines or Mathlib's
   Turing-machine polynomial time; (b) an abstract cost model; (c) polynomial
   time as an explicit hypothesis of each statement.
 - **Decision:** search problems, reductions and classes are defined against
@@ -118,6 +118,10 @@ A revised decision keeps its number and records what it replaced.
   meaning into an assumption that has to be stated honestly.
 - **History:** until 2026-10-15 the decision was (a) with (b) rejected;
   reopened because it blocked the classes.
+  On 2026-10-15 the `PolyTime.lean` docstring and this file were corrected to
+  the real name `Cslib.Turing.SingleTapeTM.PolyTimeComputable`, and the
+  `PPAD.lean` docstring to DGP05 Section 3, p. 3 (citations only; files
+  unlocked for the edit and locked again).
 
 ## D6. Hardness is stated, not proved (proposed, to confirm)
 
@@ -281,7 +285,7 @@ A revised decision keeps its number and records what it replaced.
   types.
 - **Paper reference:** DFHM24, Definition 1 (constraints on a possibly
   cyclic graph over `{0, 1, ⊥}`, solved by an assignment); Pap94 and DGP05
-  Section 2 (End-of-Line's `S` and `P` as Boolean circuits that are
+  Section 3, p. 3 (End-of-Line's `S` and `P` as Boolean circuits that are
   evaluated); FGHS (arXiv:2011.01929) Definition 2 (Localopt's circuits).
 - **Why:** with (b), three circuit types drift apart and every reduction
   between the problems translates between them. The open part is whether

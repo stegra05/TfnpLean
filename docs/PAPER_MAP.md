@@ -42,7 +42,7 @@ cake cutting.
 | MP91 §1: TFNP | | `TfnpLean/TFNP.lean` | planned |
 | Pap94 §2: polynomial-time reduction | | `TfnpLean/Reduction.lean` | planned |
 | Sanity: reductions compose, the identity is a reduction | | `TfnpLean/Reduction.lean` | planned |
-| Pap94 §2, DGP05 §2, DGP09 §3.1 p. 202: End-of-Line | | `TfnpLean/PPAD.lean` | planned, variant to choose (D15) |
+| Pap94 §2, DGP05 §3 p. 3, DGP09 §3.1 p. 202: End-of-Line | | `TfnpLean/PPAD.lean` | planned, variant to choose (D15) |
 | Pap94 §2: PPAD, PPAD-hard, PPAD-complete | | `TfnpLean/PPAD.lean` | planned, as a reduction closure (D14) |
 | Pap94 §2: End-of-Line is total | | `TfnpLean/Results/EndOfLineTotal.lean` | planned |
 | Folklore: circuit evaluation in polynomial time | | `TfnpLean/Results/CircuitEvalPolyTime.lean` | planned, depends on D5 |

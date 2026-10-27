@@ -35,7 +35,7 @@ imported as the candidate circuit model until D13 is settled.
 
 * [Pap94, Section 2] (PPAD, End-of-Line as the defining problem).
 * [C. Daskalakis, P. W. Goldberg, C. H. Papadimitriou, *The complexity of
-  computing a Nash equilibrium*, ECCC TR05-115, 2005, Section 2][DGP05]; the
+  computing a Nash equilibrium*, ECCC TR05-115, 2005, Section 3, p. 3][DGP05]; the
   journal version, SIAM J. Comput. 39(1), 2009, Section 3.1, p. 202 [DGP09].
   The End-of-Line formulation used today.
 -/

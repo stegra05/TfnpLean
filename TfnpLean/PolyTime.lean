@@ -19,10 +19,10 @@ An interface for polynomial-time computation, so that "checking a solution is
 fast" and "the reduction maps are fast" can be stated in `TfnpLean.TFNP` and
 `TfnpLean.Reduction` before the machine model is chosen (`docs/DESIGN.md`, D5).
 What stands behind the interface is open: a concrete machine model such as
-CSLib's `Cslib.PolyTimeComputable` on single-tape Turing machines (composition
-is `Cslib.PolyTimeComputable.comp`), an abstract cost model, or polynomial time
-as an explicit hypothesis. The encoding of instances and solutions as strings
-belongs to the concrete choice.
+CSLib's `Cslib.Turing.SingleTapeTM.PolyTimeComputable` on single-tape Turing
+machines (composition is `Cslib.Turing.SingleTapeTM.PolyTimeComputable.comp`),
+an abstract cost model, or polynomial time as an explicit hypothesis. The
+encoding of instances and solutions as strings belongs to the concrete choice.
 
 The class FP is not in CSLib; it is stated here against the interface.
 
