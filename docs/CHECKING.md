@@ -108,6 +108,22 @@ Expected: `00` is a solution by the first clause, `P(S(00)) ≠ 00`. The
 - The one-bit instance `S = NOT`, `P = 0` built from CSLib circuits
   satisfies the condition on `0^n` by `decide` and has exactly the solution
   `1`.
+- In example 2, `10` is a source and not a sink, and `11` is a sink and not
+  a source: the two notions are not interchangeable.
+- Example 3 (the line `00 → 01`, the vertex `10` without any edge, the loop
+  `11 → 11`) has exactly the solutions `01` and `10`. `10` satisfies both
+  clauses and is a sink and a source at once; `11` has an in-edge and an
+  out-edge and is not a solution.
+- E4 on circuits: the one-bit instance `S = NOT`, `P = id` has no edges, and
+  both vertices are solutions, `0` by the first clause.
+- Example 1 as an instance: circuits with one and two gates compute the
+  tables of example 1, and the instance has exactly the solution `10`.
+
+The last four were added on 2026-11-10 after a mutation check: each of
+seven wrong variants of the definition (a clause dropped or misplaced, `S`
+and `P` swapped in the formula, in the condition on `0^n` or at the
+instance, edges from `S` alone, source defined as sink) is now rejected by
+at least two tests.
 
 ## Later definitions
 

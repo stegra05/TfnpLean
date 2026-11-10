@@ -33,6 +33,13 @@ built from CSLib circuits.
   examples (the bridge of `docs/DESIGN.md`, D17, on instances of size two).
 * **Instance:** `S = NOT`, `P = 0` on one bit is an instance (the condition on `0^n`
   holds by `decide`), with the sink `1` as its only solution.
+* **E4 on circuits:** `S = NOT`, `P = id` on one bit is an instance without edges; both
+  vertices are solutions, `0` by the first clause.
+* **Example 3, an isolated vertex and a self-loop:** the line `00 → 01`, the vertex `10`
+  with no edge at all, and the loop `11 → 11`. `10` is a solution by both clauses, `11`
+  is not a solution.
+* **Example 1 as an instance:** the tables of example 1 computed by circuits with one and
+  two gates; the instance has the same single solution `10`.
 
 ## References
 
@@ -110,6 +117,12 @@ example : P₂ (S₂ (v true false)) = v true false ∧ S₂ (P₂ (v true false
 /-- `S x = x` with `P x ≠ x` is "no successor", not a self-loop. -/
 example : ¬ Edge S₂ P₂ (v false true) (v false true) := by decide
 
+/-- Sink and source are different notions: `10` is a source and not a sink, `11` is a sink
+and not a source. -/
+example : (IsSource S₂ P₂ (v true false) ∧ ¬ IsSink S₂ P₂ (v true false)) ∧
+    (IsSink S₂ P₂ (v true true) ∧ ¬ IsSource S₂ P₂ (v true true)) := by
+  decide
+
 /-! ### The bridge on the examples: formula versus sink or source -/
 
 example : ∀ x, IsSolution S₁ P₁ x ↔ (IsSink S₁ P₁ x ∨ (IsSource S₁ P₁ x ∧ x ≠ zeros)) := by
@@ -129,7 +142,7 @@ example : ¬ ((id : Vertex 2 → Vertex 2) zeros = zeros ∧
 problem total. -/
 example : ∀ x, ¬ IsSolution (id : Vertex 2 → Vertex 2) id x := by decide
 
-/-- Successor table of E4: as example 1, but `P 01 = 11`, so `00` loses its out-edge. -/
+/-- Predecessor table of E4: as example 1, but `P 01 = 11`, so `00` loses its out-edge. -/
 def P₄ : Vertex 2 → Vertex 2 := fun x =>
   if x = v false false then v false false else
   if x = v false true then v true true else
@@ -168,5 +181,73 @@ condition on `0^n`, so no instance has it as both circuits. -/
 def idCircuit : BoolCircuit 1 := Circuit.id Boolean.signature 1
 
 example : ¬ (idCircuit.fn zeros = zeros ∧ idCircuit.fn zeros ≠ zeros) := by decide
+
+/-- **E4 on circuits.** `S = NOT`, `P = id` on one bit is an instance without edges. -/
+def noEdge : Instance 1 where
+  S := notCircuit
+  P := idCircuit
+  source := by decide
+
+/-- Both vertices of `noEdge` are solutions, `0` by the first clause. -/
+example : ∀ x, noEdge.IsSolution x := by decide
+
+/-! ### Example 3: an isolated vertex and a self-loop -/
+
+/-- Predecessor table of example 3: `00 ↦ 00`, `01 ↦ 00`, `10 ↦ 11`, `11 ↦ 11`. The
+successor table is `S₂`. -/
+def P₃ : Vertex 2 → Vertex 2 := fun x =>
+  if x = v false false then v false false else
+  if x = v false true then v false false else
+  if x = v true false then v true true else v true true
+
+/-- The condition on `0^n` holds for the tables of example 3. -/
+example : P₃ zeros = zeros ∧ S₂ zeros ≠ zeros := by decide
+
+/-- The edges of example 3 are exactly `00 → 01` and the loop `11 → 11`. -/
+example : ∀ x y, Edge S₂ P₃ x y ↔
+    (x = v false false ∧ y = v false true) ∨ (x = v true true ∧ y = v true true) := by decide
+
+/-- The solutions of example 3 are the sink `01` and the isolated vertex `10`. -/
+example : ∀ x, IsSolution S₂ P₃ x ↔ (x = v false true ∨ x = v true false) := by decide
+
+/-- `10` has neither an out-edge nor an in-edge: both clauses hold. -/
+example : P₃ (S₂ (v true false)) ≠ v true false ∧ S₂ (P₃ (v true false)) ≠ v true false := by
+  decide
+
+/-- `10` is a sink and a source at once. -/
+example : IsSink S₂ P₃ (v true false) ∧ IsSource S₂ P₃ (v true false) := by decide
+
+/-- `S x = x` with `P x = x` is a self-loop: `11` has an in-edge and an out-edge and is not a
+solution. -/
+example : Edge S₂ P₃ (v true true) (v true true) ∧ ¬ IsSolution S₂ P₃ (v true true) := by
+  decide
+
+example : ∀ x, IsSolution S₂ P₃ x ↔ (IsSink S₂ P₃ x ∨ (IsSource S₂ P₃ x ∧ x ≠ zeros)) := by
+  decide
+
+/-! ### Example 1 as an instance: circuits with more than one gate -/
+
+/-- The successor circuit of example 1, `(a, b) ↦ (b, ¬a)`: one NOT gate on input `a`. -/
+def succCircuit₁ : BoolCircuit 2 where
+  program := .gate .empty ⟨.not, fun _ => .input 0⟩
+  outputs := ![.input 1, .gate 0]
+
+/-- The predecessor circuit of example 1, `(a, b) ↦ (a ∧ ¬b, a)`: a NOT gate on input `b`,
+then an AND gate on input `a` and that gate. -/
+def predCircuit₁ : BoolCircuit 2 where
+  program := .gate (.gate .empty ⟨.not, fun _ => .input 1⟩) ⟨.and, ![.input 0, .gate 0]⟩
+  outputs := ![.gate 1, .input 0]
+
+/-- The circuits compute the tables of example 1. -/
+example : (∀ x, succCircuit₁.fn x = S₁ x) ∧ (∀ x, predCircuit₁.fn x = P₁ x) := by decide
+
+/-- Example 1 as an instance. -/
+def example₁ : Instance 2 where
+  S := succCircuit₁
+  P := predCircuit₁
+  source := by decide
+
+/-- `10` is the only solution of example 1 as an instance. -/
+example : ∀ x, example₁.IsSolution x ↔ x = v true false := by decide
 
 end TfnpLean.EndOfLine.Tests
