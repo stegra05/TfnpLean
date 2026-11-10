@@ -434,6 +434,54 @@ A revised decision keeps its number and records what it replaced.
   constant factor, which the polynomial-time layer (D5) tolerates. Not a
   divergence from the paper, but a choice, so it is logged.
 
+## D20. `PPAD.lean` imports what End-of-Line uses, not the frame
+
+- **Question:** What does `TfnpLean/PPAD.lean` import while it defines only
+  End-of-Line?
+- **Date:** 2026-11-10
+- **Decision:** `Mathlib.Data.Fintype.Pi` and
+  `Cslib.Computability.Circuit.Boolean.Basic`. The import of
+  `TfnpLean.Reduction` is removed until PPAD itself is defined in this file
+  (D14).
+- **Paper reference:** none; an engineering decision.
+- **Rejected:** keeping `TfnpLean.Reduction` as the only library import.
+  `Reduction`, `SearchProblem`, `PolyTime` and `TFNP` have no declarations
+  yet, and the file compiled only because that import chain reaches
+  `TfnpLean.PureCircuit` and its Mathlib imports: `IsSink` and `IsSource`
+  quantify over all vertices, and their `Decidable` instances need
+  `Fintype (Fin n → Bool)`. Keeping both imports: an unused import hides
+  the next accident of the same kind.
+- **Why:** End-of-Line should not depend on Pure-Circuit. The definitions
+  did not change; `TfnpLean.Tests.EndOfLine` now builds without
+  Pure-Circuit. The import returns with the PPAD definition.
+
+## D21. End-of-Line sanity statements, and totality through a sink
+
+- **Question:** Which statements about End-of-Line does the library carry,
+  and how is totality proved?
+- **Date:** 2026-11-10
+- **Decision:** `TfnpLean/Results/EndOfLineTotal.lean` states and proves, on
+  the function layer of D17: out-degree and in-degree at most one; `x` is a
+  sink iff `P (S x) ≠ x` and a source iff `S (P x) ≠ x`; the bridge of D17;
+  a sink exists whenever `P(0^n) = 0^n ≠ S(0^n)`. On instances: `0^n` is a
+  source, every instance has a solution, and there is no instance on zero
+  bits. Totality is derived from the existence of a sink.
+- **Paper reference:** DGP09, Section 3.1, p. 202 (the intuition paragraph:
+  the edges, degrees at most one, "at least one source, namely 0^n, so
+  there must be a sink", and the remark that insisting on a sink gives
+  PPADS); Pap94, Section 2.
+- **Rejected:** proving totality by following the path from `0^n` (the
+  paper's wording; needs an iteration and a no-repeat argument in Lean);
+  stating totality only for instances (the function statement is what a
+  reduction into End-of-Line can use).
+- **Why:** these are the sentences of the paper that follow from the
+  definition, so proving them tests the definition (`docs/CHECKING.md`,
+  sanity theorems). The proof by counting is short: without a sink `P` is a
+  left inverse of `S`, so `S` is injective, hence surjective on a finite
+  type, and something maps to `0^n`, against the condition on `0^n`. It
+  never uses the second clause, which makes the PPADS remark visible in the
+  library. The statement proved is the paper's; only the argument differs.
+
 ## Open
 
 - Namespace: `TfnpLean` for now; a CSLib contribution would use `Cslib`.
