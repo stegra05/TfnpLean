@@ -25,25 +25,26 @@ definitions never do.
 ## Status
 
 Work in progress. Pure-Circuit (Definition 1 and the gates of Section 2.1)
-is drafted with tests and awaits supervisor review; the other modules
-contain module docstrings that say what goes there and which paper item they
-follow. Per-item status is tracked in [`docs/PAPER_MAP.md`](docs/PAPER_MAP.md).
+and End-of-Line are drafted with tests and await supervisor review. Modules
+that are planned and not yet written are described in
+[`docs/PLANNED.md`](docs/PLANNED.md): what goes there and which paper item
+they follow. Per-item status is tracked in [`docs/PAPER_MAP.md`](docs/PAPER_MAP.md).
 
 The library is built in layers:
 
 | Layer | Content | Module |
 |---|---|---|
-| Problems | Pure-Circuit, End-of-Line, Localopt, on a shared circuit core (D13, open) | `TfnpLean.PureCircuit`, `TfnpLean.PPAD` |
-| Polynomial time | an abstract interface; the concrete model is open (D5) | `TfnpLean.PolyTime` |
-| Frame | search problems, TFNP, reductions and their closure | `TfnpLean.SearchProblem`, `TfnpLean.TFNP`, `TfnpLean.Reduction` |
-| Classes | PPAD and PLS as reduction closures of End-of-Line and Localopt (D14); PPA, PPP, PPADS and CLS later | `TfnpLean.PPAD` |
+| Problems | Pure-Circuit, End-of-Line; Localopt planned (circuit core: D13, open) | `TfnpLean.PureCircuit`, `TfnpLean.EndOfLine` |
+| Polynomial time | an abstract interface; the concrete model is open (D5) | planned |
+| Frame | search problems, TFNP, reductions and their closure | planned |
+| Classes | PPAD and PLS as reduction closures of End-of-Line and Localopt (D14); PPA, PPP, PPADS and CLS later | planned |
 
-`TfnpLean/Results/` holds theorem statements: Pure-Circuit is PPAD-complete
-(membership and hardness), the gate-set variants, Sperner is in PPAD, and
-sanity theorems (End-of-Line is total, PPAD is contained in TFNP).
-`TfnpLean/Validation/` restates results of existing papers in the library's
-terms (sparse win-lose games). `TfnpLean/Tests/` holds the examples and
-must-fail cases.
+A problem module does not depend on the frame; a class module imports the
+frame and its canonical problem. `TfnpLean/Results/` holds the theorems that
+test the definitions (so far: the graph reading of End-of-Line and its
+totality), and later the reductions between the problems. `TfnpLean/Tests/`
+holds the examples and must-fail cases. A module is created when its first
+declaration exists.
 
 ## How a definition is checked
 

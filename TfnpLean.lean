@@ -6,18 +6,8 @@ Authors: Steffen Grabert
 module
 
 public import TfnpLean.PureCircuit
-public import TfnpLean.SearchProblem
-public import TfnpLean.PolyTime
-public import TfnpLean.TFNP
-public import TfnpLean.Reduction
-public import TfnpLean.PPAD
+public import TfnpLean.EndOfLine
 public import TfnpLean.Results.EndOfLineTotal
-public import TfnpLean.Results.CircuitEvalPolyTime
-public import TfnpLean.Results.PPADSubsetTFNP
-public import TfnpLean.Results.PureCircuitVariants
-public import TfnpLean.Results.PureCircuitInPPAD
-public import TfnpLean.Results.PureCircuitPPADHard
-public import TfnpLean.Validation.SparseWinLose
 public import TfnpLean.Tests.PureCircuit
 public import TfnpLean.Tests.EndOfLine
 
@@ -28,17 +18,17 @@ A Lean 4 library of verified definitions and theorem statements for total search
 problems: TFNP, PPAD, PLS and their canonical problems Pure-Circuit, End-of-Line and
 Localopt, built on CSLib and Mathlib.
 
-The library is built in layers:
+The library is built in layers. Written so far:
 
-* Problems: `TfnpLean.PureCircuit` (Pure-Circuit and the gates of its variants,
-  Mathlib only), End-of-Line in `TfnpLean.PPAD`; Localopt to come. Whether they
-  share one circuit core is open (`docs/DESIGN.md`, D13).
-* Polynomial time: `TfnpLean.PolyTime`, an interface; the model behind it is open (D5).
-* Frame: `TfnpLean.SearchProblem`, `TfnpLean.TFNP`, `TfnpLean.Reduction`.
-* Classes: PPAD in `TfnpLean.PPAD` as the reduction closure of End-of-Line (D14);
-  PLS from Localopt to come.
+* Problems: `TfnpLean.PureCircuit` (Pure-Circuit and the gates of its variants) and
+  `TfnpLean.EndOfLine`. A problem module depends on Mathlib and CSLib only, not on the
+  frame below.
+* Results: `TfnpLean.Results.EndOfLineTotal`, the statements that test the End-of-Line
+  definition (its graph reading, totality).
+* Tests: `TfnpLean.Tests`, the examples and must-fail cases from `docs/CHECKING.md`.
 
-`Results/` holds the theorem statements that test the definitions, `Validation/` holds
-results of existing papers restated in the library's terms, and `Tests/` holds the
-examples and must-fail cases from `docs/CHECKING.md`.
+Planned, in this order (`docs/PLANNED.md`): polynomial time behind an interface (D5); the
+frame of search problems, TFNP and reductions; the classes, with PPAD as the reduction
+closure of End-of-Line (D14) and PLS from Localopt; then the reductions between the
+problems. A module is created when its first declaration exists.
 -/

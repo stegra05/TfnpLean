@@ -9,7 +9,7 @@ public import Mathlib.Data.Fintype.Pi
 public import Cslib.Computability.Circuit.Boolean.Basic
 
 /-!
-# End-of-Line and PPAD
+# End-of-Line
 
 The End-of-Line problem of Daskalakis, Goldberg and Papadimitriou [DGP09, Section 3.1,
 p. 202]: two Boolean circuits `S` and `P`, each with `n` input bits and `n` output bits,
@@ -18,8 +18,8 @@ such that `P(0^n) = 0^n ≠ S(0^n)`; find `x ∈ {0,1}^n` with `P(S(x)) ≠ x` o
 `x → y` whenever `y = S(x)` and `x = P(y)`, every vertex has in- and out-degree at most
 one, `0^n` is a source, and a solution is a sink or a source other than `0^n`.
 
-PPAD, the closure of End-of-Line under reductions (`docs/DESIGN.md`, D14), is not yet
-defined here: it waits on `TfnpLean.Reduction` and the polynomial-time interface (D5).
+PPAD, the closure of End-of-Line under reductions (`docs/DESIGN.md`, D14), gets its own
+module once reductions and the polynomial-time interface (D5) exist (D22).
 
 ## Main definitions
 

@@ -5,7 +5,7 @@ Authors: Steffen Grabert
 -/
 module
 
-public import TfnpLean.PPAD
+public import TfnpLean.EndOfLine
 public import Mathlib.Data.Fintype.EquivFin
 
 /-!
