@@ -482,6 +482,33 @@ A revised decision keeps its number and records what it replaced.
   never uses the second clause, which makes the PPADS remark visible in the
   library. The statement proved is the paper's; only the argument differs.
 
+## D22. One module per problem, classes separate, no empty modules
+
+- **Question:** Where do End-of-Line and PPAD live, and what does the
+  module tree contain before a layer is written?
+- **Date:** 2026-11-10
+- **Decision:** End-of-Line moves from `TfnpLean/PPAD.lean` to
+  `TfnpLean/EndOfLine.lean` (namespace `TfnpLean.EndOfLine`, unchanged).
+  `TfnpLean/PPAD.lean` will hold only the class and imports the frame and
+  `TfnpLean.EndOfLine`. Problem modules depend on Mathlib and CSLib only;
+  the frame imports no problem. The ten modules that held a module
+  docstring and no declaration are removed; their text is in
+  `docs/PLANNED.md`, and a module is created when its first declaration
+  exists.
+- **Paper reference:** none; an engineering decision.
+- **Supersedes:** the placement in D19 ("the definitions live in
+  `TfnpLean/PPAD.lean` ... split when PPAD arrives if the file grows").
+  The definitions and their encoding (D16 to D19) are unchanged.
+- **Rejected:** keeping End-of-Line in `PPAD.lean` until PPAD is written
+  (a module named after a class it does not define; and once the class is
+  added, the problem depends on reductions and polynomial time, unlike
+  Pure-Circuit); keeping the docstring-only modules (the import graph then
+  shows dependencies that no code has, such as the frame on Pure-Circuit,
+  and End-of-Line compiled through one of them by accident, D20).
+- **Why:** a frozen file is pinned by its path, so the rename has to come
+  before the first freeze. One rule for all problems: a problem is a brick
+  that needs no frame.
+
 ## Open
 
 - Namespace: `TfnpLean` for now; a CSLib contribution would use `Cslib`.
