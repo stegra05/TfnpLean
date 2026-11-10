@@ -47,9 +47,11 @@ cake cutting.
 | DGP09 §3.1 p. 202: edge x → y iff y = S(x) and x = P(y); sink, source | `TfnpLean.EndOfLine.Edge`, `TfnpLean.EndOfLine.IsSink`, `TfnpLean.EndOfLine.IsSource` | `TfnpLean/PPAD.lean` | drafted |
 | DGP09 §3.1 p. 202: End-of-Line instance (two circuits, P(0^n) = 0^n ≠ S(0^n) as a field) | `TfnpLean.EndOfLine.Instance` | `TfnpLean/PPAD.lean` | drafted, D13 and D18 proposed |
 | DGP09 §3.1 p. 202: solution of an instance | `TfnpLean.EndOfLine.Instance.IsSolution` | `TfnpLean/PPAD.lean` | drafted |
-| DGP09 §3.1 p. 202: "a sink, or a source other than 0^n" equals the formula | | `TfnpLean/Results/EndOfLineTotal.lean` | planned (D17 bridge) |
+| DGP09 §3.1 p. 202: indegree and outdegree at most 1 | `TfnpLean.EndOfLine.edge_out_unique`, `TfnpLean.EndOfLine.edge_in_unique` | `TfnpLean/Results/EndOfLineTotal.lean` | drafted, proved |
+| DGP09 §3.1 p. 202: "a sink, or a source other than 0^n" equals the formula | `TfnpLean.EndOfLine.isSink_iff`, `TfnpLean.EndOfLine.isSource_iff`, `TfnpLean.EndOfLine.isSolution_iff_isSink_or_isSource` | `TfnpLean/Results/EndOfLineTotal.lean` | drafted, proved (D17 bridge) |
+| DGP09 §3.1 p. 202: 0^n is a source | `TfnpLean.EndOfLine.Instance.isSource_zeros` | `TfnpLean/Results/EndOfLineTotal.lean` | drafted, proved |
 | Pap94 §2: PPAD, PPAD-hard, PPAD-complete | | `TfnpLean/PPAD.lean` | planned, as a reduction closure (D14) |
-| Pap94 §2: End-of-Line is total | | `TfnpLean/Results/EndOfLineTotal.lean` | planned |
+| DGP09 §3.1 p. 202, Pap94 §2: End-of-Line is total | `TfnpLean.EndOfLine.exists_isSink`, `TfnpLean.EndOfLine.Instance.exists_isSolution` | `TfnpLean/Results/EndOfLineTotal.lean` | drafted, proved (D21) |
 | Folklore: circuit evaluation in polynomial time | | `TfnpLean/Results/CircuitEvalPolyTime.lean` | planned, depends on D5 |
 | Pap94: PPAD ⊆ TFNP | | `TfnpLean/Results/PPADSubsetTFNP.lean` | planned |
 | Pap94: Sperner in PPAD (statement) | | | planned |
