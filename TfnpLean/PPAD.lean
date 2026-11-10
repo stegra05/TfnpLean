@@ -5,7 +5,7 @@ Authors: Steffen Grabert
 -/
 module
 
-public import TfnpLean.Reduction
+public import Mathlib.Data.Fintype.Pi
 public import Cslib.Computability.Circuit.Boolean.Basic
 
 /-!
