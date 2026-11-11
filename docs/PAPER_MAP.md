@@ -42,11 +42,11 @@ cake cutting.
 | MP91 §1: TFNP | | `TfnpLean/TFNP.lean` | planned |
 | Pap94 §2: polynomial-time reduction | | `TfnpLean/Reduction.lean` | planned |
 | Sanity: reductions compose, the identity is a reduction | | `TfnpLean/Reduction.lean` | planned |
-| DGP09 §3.1 p. 202: vertices {0,1}^n, 0^n | `TfnpLean.EndOfLine.Vertex`, `TfnpLean.EndOfLine.zeros` | `TfnpLean/EndOfLine.lean` | drafted |
-| DGP09 §3.1 p. 202: End-of-Line solution condition (on functions) | `TfnpLean.EndOfLine.IsSolution` | `TfnpLean/EndOfLine.lean` | drafted |
-| DGP09 §3.1 p. 202: edge x → y iff y = S(x) and x = P(y); sink, source | `TfnpLean.EndOfLine.Edge`, `TfnpLean.EndOfLine.IsSink`, `TfnpLean.EndOfLine.IsSource` | `TfnpLean/EndOfLine.lean` | drafted |
-| DGP09 §3.1 p. 202: End-of-Line instance (two circuits, P(0^n) = 0^n ≠ S(0^n) as a field) | `TfnpLean.EndOfLine.Instance` | `TfnpLean/EndOfLine.lean` | drafted, D13 and D18 proposed |
-| DGP09 §3.1 p. 202: solution of an instance | `TfnpLean.EndOfLine.Instance.IsSolution` | `TfnpLean/EndOfLine.lean` | drafted |
+| DGP09 §3.1 p. 202: vertices {0,1}^n, 0^n | `TfnpLean.EndOfLine.Vertex`, `TfnpLean.EndOfLine.zeros` | `TfnpLean/EndOfLine.lean` | checked |
+| DGP09 §3.1 p. 202: End-of-Line solution condition (on functions) | `TfnpLean.EndOfLine.IsSolution` | `TfnpLean/EndOfLine.lean` | checked |
+| DGP09 §3.1 p. 202: edge x → y iff y = S(x) and x = P(y); sink, source | `TfnpLean.EndOfLine.Edge`, `TfnpLean.EndOfLine.IsSink`, `TfnpLean.EndOfLine.IsSource` | `TfnpLean/EndOfLine.lean` | checked |
+| DGP09 §3.1 p. 202: End-of-Line instance (two circuits, P(0^n) = 0^n ≠ S(0^n) as a field) | `TfnpLean.EndOfLine.Instance` | `TfnpLean/EndOfLine.lean` | checked, D13 and D18 proposed |
+| DGP09 §3.1 p. 202: solution of an instance | `TfnpLean.EndOfLine.Instance.IsSolution` | `TfnpLean/EndOfLine.lean` | checked |
 | DGP09 §3.1 p. 202: indegree and outdegree at most 1 | `TfnpLean.EndOfLine.edge_out_unique`, `TfnpLean.EndOfLine.edge_in_unique` | `TfnpLean/Results/EndOfLineTotal.lean` | drafted, proved |
 | DGP09 §3.1 p. 202: "a sink, or a source other than 0^n" equals the formula | `TfnpLean.EndOfLine.isSink_iff`, `TfnpLean.EndOfLine.isSource_iff`, `TfnpLean.EndOfLine.isSolution_iff_isSink_or_isSource` | `TfnpLean/Results/EndOfLineTotal.lean` | drafted, proved (D17 bridge) |
 | DGP09 §3.1 p. 202: 0^n is a source | `TfnpLean.EndOfLine.Instance.isSource_zeros` | `TfnpLean/Results/EndOfLineTotal.lean` | drafted, proved |
