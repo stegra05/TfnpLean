@@ -6,6 +6,34 @@ Nothing in the library changes shape without an entry here. Decisions
 marked "open", "proposed" or "to confirm" are waiting for the supervisor.
 A revised decision keeps its number and records what it replaced.
 
+## Status (2026-11-12)
+
+The entries below are the record and keep their text. This table says where
+each one stands today.
+
+| | Decision | Status |
+|---|---|---|
+| D1 | Base: CSLib on top of Mathlib | decided |
+| D2 | Pure-Circuit is a constraint problem, not a CSLib circuit | decided |
+| D3 | All gates of Section 2.1 in one type; the gate set is a parameter | decided |
+| D4 | Lean module system and CSLib file conventions | decided |
+| D5 | Polynomial time behind an interface | OPEN |
+| D6 | Hardness is stated, not proved | out of date, to revise: the thesis now proves the hardness chain |
+| D7 to D11 | Pure-Circuit encoding: values, nodes, gates, instance fields, gate semantics | decided |
+| D12 | COPY and NOT are gates on two nodes | decided, to confirm with the supervisor |
+| D13 | Separate circuit types | proposed |
+| D14 | Classes are reduction closures of their canonical problems | proposed |
+| D15 | One variant per problem, cited by page | decided; End-of-Line follows DGP09, Localopt open |
+| D16, D17 | End-of-Line vertices and solution condition | decided |
+| D18 | The condition on `0^n` is a proof field of `Instance` | proposed |
+| D19 | End-of-Line circuits are CSLib Boolean circuits | decided; placement superseded by D22 |
+| D20 | Imports of the End-of-Line module | decided; the file is now `TfnpLean/EndOfLine.lean` (D22) |
+| D21 | End-of-Line sanity statements, totality through a sink | decided |
+| D22 | One module per problem, classes separate, no empty modules | decided |
+
+Not yet an entry: the signature of a reduction (whether the back-map sees
+the original instance, typed solutions or bit strings).
+
 ## D1. Base: CSLib on top of Mathlib
 
 - **Question:** Which library does TfnpLean build on?
@@ -139,6 +167,10 @@ A revised decision keeps its number and records what it replaced.
 - **Why:** stating it checks that PPAD, reductions and Pure-Circuit fit
   together in the direction the paper uses. Proving it needs the
   StrongSperner construction, which is beyond the thesis.
+- **Status (2026-11-12):** out of date. Since 2026-11-04 the thesis proves
+  the chain End-of-Line, 2D Sperner, StrongSperner, Pure-Circuit, so
+  hardness is a proof target and StrongSperner is defined. This entry
+  waits for its revision.
 
 ## D7. Node values are a three-constructor inductive
 
@@ -433,6 +465,8 @@ A revised decision keeps its number and records what it replaced.
   `n` bits has a circuit; a change of complete basis changes sizes by a
   constant factor, which the polynomial-time layer (D5) tolerates. Not a
   divergence from the paper, but a choice, so it is logged.
+- **Status (2026-11-12):** the placement in `TfnpLean/PPAD.lean` is
+  superseded by D22; the encoding stands.
 
 ## D20. `PPAD.lean` imports what End-of-Line uses, not the frame
 
@@ -454,6 +488,9 @@ A revised decision keeps its number and records what it replaced.
 - **Why:** End-of-Line should not depend on Pure-Circuit. The definitions
   did not change; `TfnpLean.Tests.EndOfLine` now builds without
   Pure-Circuit. The import returns with the PPAD definition.
+- **Status (2026-11-12):** the file is now `TfnpLean/EndOfLine.lean` (D22)
+  with the same two imports; `TfnpLean/PPAD.lean` does not exist until the
+  class is defined.
 
 ## D21. End-of-Line sanity statements, and totality through a sink
 
@@ -513,6 +550,8 @@ A revised decision keeps its number and records what it replaced.
 
 - Namespace: `TfnpLean` for now; a CSLib contribution would use `Cslib`.
 - Polynomial time (D5).
-- The circuit core (D13) and the `0^n` condition (D18): proposed, supervisor
-  review 2026-10-28.
+- The circuit core (D13) and the `0^n` condition (D18): proposed, to
+  confirm with the supervisor.
+- Hardness as a proof target (D6): entry to revise.
+- The signature of a reduction: no entry yet.
 - Which text Localopt follows (D15).
