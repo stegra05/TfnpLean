@@ -1,7 +1,7 @@
 # Paper map
 
 Paper item to Lean declaration to status. Status values, in order:
-`planned` (docstring only), `on paper` (written next to the paper, examples
+`planned` (no declaration yet; plan in `PLANNED.md`), `on paper` (written next to the paper, examples
 by hand), `drafted` (Lean exists, tests exist), `checked` (four-step check
 done by me), `reviewed` (walked through with the supervisor; file frozen with
 `scripts/freeze.py`). For theorems the proof state is noted after a comma:
@@ -15,7 +15,8 @@ Papadimitriou ECCC TR05-115, BFGS26 = Batziou, Fearnley, Ghosh, Savani
 Comput. 39(1), 2009, JPY88 = Johnson, Papadimitriou, Yannakakis 1988,
 FGHS23 = Fearnley, Goldberg, Hollender, Savani, J. ACM 70(1), 2023
 (arXiv:2011.01929), HR23 = Hollender and Rubinstein, four-agent envy-free
-cake cutting.
+cake cutting, CD06 = Chen and Deng, ECCC TR06-037, CDT09 = Chen, Deng, Teng,
+J. ACM 56(3), 2009.
 
 | Paper item | Lean declaration | File | Status |
 |---|---|---|---|
@@ -31,10 +32,16 @@ cake cutting.
 | DFHM24 Cor. 2.2: choice of gate types | `TfnpLean.PureCircuit.GateType`, `TfnpLean.PureCircuit.norPurify`, field `Instance.allowed` | `TfnpLean/PureCircuit.lean` | drafted |
 | DFHM24 Cor. 2.2 proof: NOT from PURIFY and NAND, NOR from OR and NOT | `TfnpLean.PureCircuit.Tests.notGadget`, `TfnpLean.PureCircuit.Tests.norGadget` | `TfnpLean/Tests/PureCircuit.lean` | drafted |
 | DFHM24 Cor. 2.2: variants reduce to NOR + PURIFY | | `TfnpLean/Results/PureCircuitVariants.lean` | planned |
-| DFHM24 Thm. 2.1: Pure-Circuit in PPAD (statement) | | `TfnpLean/Results/PureCircuitInPPAD.lean` | planned, proof not planned |
-| DFHM24 Thm. 2.1: Pure-Circuit PPAD-hard (statement only) | | `TfnpLean/Results/PureCircuitPPADHard.lean` | planned, proposed, to confirm; proof out of scope |
+| DFHM24 Thm. 2.1: Pure-Circuit in PPAD | | `TfnpLean/Results/PureCircuitInPPAD.lean` | planned, proof through ε-GCircuit (rows below) |
+| DFHM24 Thm. 2.1: Pure-Circuit PPAD-hard | | `TfnpLean/Results/PureCircuitPPADHard.lean` | planned, proof along the chain below (D6 to revise) |
 | DFHM24 Cor. 2.3: structural restrictions | | | out of scope |
-| DFHM24 Def. 2: StrongSperner | | | out of scope (only needed for the hardness proof) |
+| DFHM24 Def. 2 (§3.1, p. 10): StrongSperner | | | planned |
+| DFHM24 Remark 3 (p. 11), CD06: End-of-Line reduces to 2D Sperner | | | planned, own definition or StrongSperner with N = 2 open |
+| DFHM24 Remark 3 (p. 11), CDT09: 2D Sperner reduces to StrongSperner (snake embedding) | | | planned |
+| DFHM24 §3.2, Lemmas 3.2 to 3.6: StrongSperner reduces to Pure-Circuit | | | planned |
+| DFHM24 Def. 3: ε-GCircuit | | | planned |
+| DFHM24 §4.1: Pure-Circuit reduces to ε-GCircuit | | | planned |
+| CDT09 Lemma 5.7, Pap94: ε-GCircuit in PPAD | | | planned, proved or cited open |
 | DFHM24 App. A.1: all-garbage not a solution with PURIFY | `TfnpLean.PureCircuit.Tests.norCycle` | `TfnpLean/Tests/PureCircuit.lean` | drafted (MF1) |
 | MP91 §1: search problem | | `TfnpLean/SearchProblem.lean` | planned |
 | MP91 §1: total search problem | | `TfnpLean/SearchProblem.lean` | planned |
@@ -55,8 +62,8 @@ cake cutting.
 | Folklore: circuit evaluation in polynomial time | | `TfnpLean/Results/CircuitEvalPolyTime.lean` | planned, depends on D5 |
 | Pap94: PPAD ⊆ TFNP | | `TfnpLean/Results/PPADSubsetTFNP.lean` | planned |
 | Pap94: Sperner in PPAD (statement) | | | planned |
-| FGHS23 Def. 2 (p. 13): Localopt | | | planned, variant to choose (D15) |
-| JPY88 §2, FGHS23 §3.1: PLS | | | planned, as a reduction closure (D14) |
-| Pap94: PPA, PPP, PPADS; FGHS23: CLS | | | planned, after PPAD and PLS |
-| BFGS26: main theorem restated with library primitives | | `TfnpLean/Validation/SparseWinLose.lean` | planned |
+| FGHS23 Def. 2 (p. 13): Localopt | | | planned, stretch, variant to choose (D15) |
+| JPY88 §2, FGHS23 §3.1: PLS | | | planned, stretch, as a reduction closure (D14) |
+| Pap94: PPA, PPP, PPADS; FGHS23: CLS | | | planned, stretch |
+| BFGS26: main theorem restated with library primitives | | `TfnpLean/Validation/SparseWinLose.lean` | planned, stretch (application) |
 | HR23: envy-free cake cutting | | | out of scope (query model, not an input-based search problem) |

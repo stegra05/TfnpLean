@@ -135,8 +135,8 @@ Membership of Pure-Circuit in PPAD, the easy half of [DFHM24, Theorem 2.1].
 In the paper it follows either from the reductions of Section 4 to problems
 known to be in PPAD, or directly by reducing to a Brouwer fixed-point problem
 (Section 2, discussion after Theorem 2.1). Either way a fixed-point theorem or
-another PPAD problem is needed, which is why the library states it without a
-proof.
+another PPAD problem is needed. The planned route is through ε-GCircuit, see
+"The chain" below; how much of it is proved and how much cited is open.
 
 PPAD-hardness, the other half of Theorem 2.1, is stated in
 `TfnpLean.Results.PureCircuitPPADHard`.
@@ -150,15 +150,15 @@ PPAD-hardness, the other half of Theorem 2.1, is stated in
 * [DFHM24, Theorem 2.1 and the discussion following it; Section 3.1 for
   StrongSperner].
 
-## `TfnpLean/Results/PureCircuitPPADHard.lean`: Result: Pure-Circuit is PPAD-hard (statement only)
+## `TfnpLean/Results/PureCircuitPPADHard.lean`: Result: Pure-Circuit is PPAD-hard
 
-(`docs/DESIGN.md`, D6).
+(`docs/DESIGN.md`, D6, to revise.)
 
 PPAD-hardness of Pure-Circuit, the hard half of [DFHM24, Theorem 2.1]: every
 problem in PPAD reduces to Pure-Circuit. Together with
 `TfnpLean.Results.PureCircuitInPPAD` this states PPAD-completeness. The
-statement is in scope; the proof (a reduction from StrongSperner,
-[DFHM24, Section 3]) is not, and the statement stays marked as unproven.
+proof is in scope since 2026-11-04: it composes the hardness steps of "The
+chain" below.
 
 ### Dependencies
 
@@ -204,9 +204,39 @@ TFNP.
 
 * [Pap94, Section 2].
 
+## The chain: StrongSperner, ε-GCircuit and the reductions between the problems
+
+No module names yet; each problem gets its own module (D22) when its first
+declaration exists.
+
+Problems:
+
+* StrongSperner [DFHM24, Section 3.1, Definition 2, p. 10].
+* 2D Sperner. Open: its own definition after [CD06], or StrongSperner with
+  `N = 2` and a large grid as in [DFHM24, Remark 3, p. 11].
+* ε-GCircuit [DFHM24, Definition 3, from CDT09].
+
+Hardness, one statement per step:
+
+* End-of-Line reduces to 2D Sperner [DFHM24, Remark 3; CD06].
+* 2D Sperner reduces to StrongSperner, by snake embedding [DFHM24, Remark 3;
+  CDT09].
+* StrongSperner reduces to Pure-Circuit [DFHM24, Section 3.2, Lemmas 3.2 to
+  3.6].
+
+Membership:
+
+* Pure-Circuit reduces to ε-GCircuit [DFHM24, Section 4.1].
+* ε-GCircuit is in PPAD [CDT09, Lemma 5.7; Pap94]. Proved or cited: open.
+
+### Dependencies
+
+`TfnpLean.Reduction`, `TfnpLean.PPAD`, `TfnpLean.EndOfLine`,
+`TfnpLean.PureCircuit`; polynomial time (D5) for every reduction.
+
 ## `TfnpLean/Validation/SparseWinLose.lean`: Validation: sparse win-lose bimatrix games
 
-An existing result restated in the library's terms: the main theorem of
+Stretch: an application of Pure-Circuit, after the chain. An existing result restated in the library's terms: the main theorem of
 Batziou, Fearnley, Ghosh and Savani [BFGS26] on approximate Nash equilibria of
 3-sparse win-lose bimatrix games, written with library primitives only.
 Needing a primitive the library does not have shows a gap in the library.
