@@ -14,7 +14,7 @@ Events:
   session_start   record session, HEAD and a content snapshot of the rationale and
                   definition files, print notes/NOW.md as context
   prompt          full user prompt
-  gate            PreToolUse on Edit/Write: definition gate + freeze gate
+  gate            PreToolUse on Edit/Write: freeze gate
   file_edit       PostToolUse on Edit/Write: .lean edits (sorry count) and docs/*.md
   bash            PostToolUse on Bash: lake invocations with outcome; head_change
                   when a command moved this repo's HEAD (commit, checkout, reset)
@@ -41,7 +41,6 @@ BACKUP_MIRROR = Path.home() / "Library/Mobile Documents/com~apple~CloudDocs/Back
 EVENTS = LOGS / "events.jsonl"
 INTERACTIONS = LOGS / "interactions.jsonl"
 LAST_HEAD = LOGS / ".head"
-UNLOCKED = ROOT / "docs" / "UNLOCKED.md"
 FROZEN = ROOT / "docs" / "frozen.json"
 RATIONALE_FILES = {"docs/DESIGN.md", "docs/PAPER_MAP.md"}
 
@@ -99,17 +98,6 @@ def sorry_census() -> dict:
         if n:
             per_file[str(p.relative_to(ROOT))] = n
     return per_file
-
-
-def unlocked() -> set:
-    if not UNLOCKED.exists():
-        return set()
-    out = set()
-    for line in UNLOCKED.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if line.startswith("- "):
-            out.add(line[2:].strip().strip("`"))
-    return out
 
 
 def frozen() -> dict:
@@ -170,7 +158,7 @@ def changed_since_start(evs: list) -> set:
 
 
 def gate(payload: dict) -> None:
-    """PreToolUse: deny edits to gated library files unless unlocked, never if frozen."""
+    """PreToolUse: deny edits to frozen definition and statement files."""
     file_path = (payload.get("tool_input") or {}).get("file_path") or ""
     if not file_path:
         return
@@ -182,12 +170,6 @@ def gate(payload: dict) -> None:
             f"FROZEN: {r} was reviewed by the supervisor and is frozen. Never weaken a "
             "definition to make a proof pass. If the change is intended, Steffen runs "
             f"`python3 scripts/freeze.py --unfreeze {r}` and logs the reason in docs/DESIGN.md.\n")
-        sys.exit(2)
-    if "*" not in unlocked() and r not in unlocked():
-        sys.stderr.write(
-            f"LOCKED: {r} is a definition or statement file. Definitions are written together "
-            "with Steffen after the paper check (docs/CHECKING.md). He unlocks a file by adding "
-            "`- " + r + "` to docs/UNLOCKED.md. Do not work around this gate.\n")
         sys.exit(2)
 
 

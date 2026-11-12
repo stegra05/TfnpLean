@@ -96,17 +96,18 @@ the configuration that constrains it, so the process can be inspected:
 - `CLAUDE.md`: the working rules (never weaken a definition to make a proof
   pass, every design choice logged, no new axioms).
 - `.claude/settings.json` and `scripts/hooks.py`: hooks that refuse edits
-  to definition files unless the author has unlocked them in
-  `docs/UNLOCKED.md`, refuse edits to frozen files, and block a session
-  from ending when a definition changed without a `docs/DESIGN.md` entry.
+  to frozen files (definitions the author has checked and the supervisor
+  has reviewed) and block a session from ending when a definition changed
+  without a `docs/DESIGN.md` entry.
 - `.claude/skills/`: the procedures for defining one paper item, closing
   one `sorry`, and logging an interaction.
 - `scripts/log_interaction.py`, `scripts/summary.py`: one record per task
   (model, outcome, repair attempts, whether a definition changed). The logs
   themselves are kept outside the repository.
 
-Definitions and theorem statements are decided by the author; the AI
-drafts, compares encodings and writes proofs.
+What a definition or theorem statement means is decided and checked by
+the author against the paper; the AI writes the Lean code, the tests and
+the proofs.
 
 Commit messages follow `define:`, `state:`, `test:`, `prove:`, `design:`,
 `infra:`, `docs:`. Enable the check with

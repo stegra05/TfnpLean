@@ -19,12 +19,10 @@ planning lives outside this repository and never gets copied in.
 
 ## Gates (enforced by hooks in `.claude/settings.json`, `scripts/hooks.py`)
 
-- **Locked files.** Files under `TfnpLean/` except `Tests/` cannot be edited
-  unless listed in `docs/UNLOCKED.md`. Only Steffen unlocks, after the paper
-  item is on paper. Do not work around the gate (no edits via shell).
-- **Frozen files.** After supervisor review Steffen runs
-  `scripts/freeze.py <file>`; edits are refused and a changed hash blocks
-  the session end and fails CI. An unfreeze gets a DESIGN.md entry.
+- **Frozen files.** After the author's check and the supervisor's review
+  Steffen runs `scripts/freeze.py <file>`; edits are refused and a changed
+  hash blocks the session end and fails CI. An unfreeze gets a DESIGN.md
+  entry. Do not work around the gate (no edits via shell).
 - **Rationale gate.** A session that edits a definition or statement file
   cannot end until `docs/DESIGN.md` and `docs/PAPER_MAP.md` were touched.
 - **Logging gate.** A session that edits Lean cannot end until one
@@ -40,9 +38,13 @@ local skills for supervision; they are not part of this repository.
 
 ## How work happens
 
-- Definitions are written together with the author after the four-step
-  check in `docs/CHECKING.md`. Do not pre-write definitions, theorems or
-  tests on your own.
+- Claude writes and improves the Lean code; the author verifies. What a
+  definition or statement means is the author's decision: a change of
+  meaning is asked first, never made silently. Every definition goes
+  through the four steps in `docs/CHECKING.md`, with the hand calculation
+  left to the author, and is frozen once reviewed.
+- Run the checks unasked after a change: `lake build`, sorry census, axiom
+  audit, paper map.
 - Statement first: every paper item becomes a declaration with a docstring
   citing the paper, then `sorry`, then a proof. Update `docs/PAPER_MAP.md`
   when a status changes.

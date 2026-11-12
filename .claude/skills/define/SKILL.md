@@ -1,18 +1,20 @@
 ---
 name: define
-description: Formalize one paper definition or statement with Steffen using the four-step checking method (paper side by side, examples by hand, must-fail tests, supervisor review). Use when asked to define, formalize, encode or state a paper item.
+description: Formalize one paper definition or statement using the four-step checking method (paper side by side, examples by hand, must-fail tests, supervisor review), in a form Steffen can verify by hand. Use when asked to define, formalize, encode or state a paper item.
 ---
 
 # Define one paper item
 
-One paper item per invocation (a definition, or one theorem statement).
-Steffen decides every encoding; you draft, compare and record. Never skip a
-step, never continue past step 3 without his choice.
+One paper item per invocation (a definition, or one theorem statement). You
+write the Lean; Steffen verifies it against the paper and decides what it
+means. Never skip a step. A choice that changes what the item means, or
+departs from the paper text, waits for his answer; any other encoding choice
+goes ahead on your recommendation and is logged as proposed.
 
 ## Steps
 
-1. **Gate.** The target file must be listed in `docs/UNLOCKED.md`. If not,
-   stop and ask Steffen to unlock it; the paper must be read first.
+1. **Gate.** If the target file is frozen (`docs/frozen.json`), stop: only
+   Steffen unfreezes.
 2. **Paper side by side.** Open the paper item (PDF in
    `../thesis/material/papers/`, section and number from `docs/PAPER_MAP.md`).
    Before any code, write a two-column table in chat: every clause of the
@@ -21,13 +23,16 @@ step, never continue past step 3 without his choice.
    column "divergence".
 3. **Choices.** List each encoding choice with at least one alternative
    (inductive vs `Option Bool`, `Fin n` vs `Fintype`, field vs proposition,
-   ...). Ask Steffen to pick. Record his picks; they become the DESIGN entry.
+   ...) and a recommendation. Record the outcome; it becomes the DESIGN
+   entry, marked proposed until Steffen confirms it.
 4. **Draft.** Write the Lean, docstring citing the paper item (`[DFHM24,
    Definition 1]` style), CSLib conventions, no `sorry` in a definition. A
    statement ends in `sorry` and that is fine.
-5. **Examples by hand.** Two tiny instances worked on paper by Steffen, then stated in `TfnpLean/Tests/` as
-   `example` with `decide` or an explicit witness. The Lean result must
-   match the hand result.
+5. **Examples by hand.** Two tiny instances, with a picture where one
+   helps, stated in `TfnpLean/Tests/` as `example` with `decide` or an
+   explicit witness. Hand Steffen the instances with the calculation left
+   to him and the answer key separate; the Lean result must match his hand
+   result.
 6. **Must-fail.** At least one `example : ¬ ...` that the definition must
    reject (see `docs/CHECKING.md`). If it unexpectedly holds, the definition
    is too weak: go back to step 3, do not weaken the test.
